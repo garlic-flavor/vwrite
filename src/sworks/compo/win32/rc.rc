@@ -1,0 +1,5 @@
+STRINGTABLE
+BEGIN
+        0x0002, "hello"
+        0x0003, "world"
+END

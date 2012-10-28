@@ -1,6 +1,6 @@
 /** 入力されたディレクトリの順にファイルを検索します。
- * Version:      0.26(dmd2.060)
- * Date:         2012-Oct-27 00:09:35
+ * Version:      0.27(dmd2.060)
+ * Date:         2012-Oct-29 01:24:08
  * Authors:      KUMA
  * License:      CC0
  */

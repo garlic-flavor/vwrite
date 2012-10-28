@@ -1,6 +1,6 @@
 /**
- * Version:      0.26(dmd2.060)
- * Date:         2012-Oct-27 00:09:35
+ * Version:      0.27(dmd2.060)
+ * Date:         2012-Oct-29 01:25:20
  * Authors:      KUMA
  * License:      CC0
  **/
@@ -12,10 +12,12 @@ import sworks.compo.stylexml.macros;
 import sworks.compo.stylexml.parser;
 
 string help= q"HELP
-Version Writer v0.26(dmd2.060). written by KUMA.
+Version Writer v0.27(dmd2.060). written by KUMA.
 
 ** syntax
-$>vwrite -version=x.x [v-style.xml] [source.d ...]
+$>vwrite -version=x.x -target=foo.exe [v-style.xml] [source.d ...]
+
+foo.exe よりも新しいファイルのみ書き替えられます。
 HELP";
 
 /// 一行切り出し。
@@ -52,31 +54,32 @@ string chomp_line( ref string cont )
 //
 void main(string[] args)
 {
-	Output output = new Output;
 	try
 	{
 		// ヘルプが必要かどうか。
-		if( args.length <= 1 ) return output.ln( help );
+		if( args.length <= 1 ) return Output.ln( help );
 		bool needs_help = false;
 		optionChar = '/';
 		getopt( args
 		      , config.caseInsensitive
 		      , config.passThrough
 		      , "help|h|?", &needs_help );
-		if( needs_help ) return output.ln( help );
+		if( needs_help ) return Output.ln( help );
 
 		optionChar = '-';
 		getopt( args
 		      , config.caseInsensitive
 		      , config.passThrough
 		      , "help|h|?", &needs_help );
-		if( needs_help ) return output.ln( help );
+		if( needs_help ) return Output.ln( help );
 
 		// 冗長性の決定
+		bool is_verbose = false;
 		getopt( args
 		      , config.caseInsensitive
 		      , config.passThrough
-		      , "verbose|v", (){ output.mode = Output.MODE.VERBOSE; } );
+		      , "verbose|v", &is_verbose );
+		if( is_verbose ) Output.mode = Output.MODE.VERBOSE;
 
 		// マクロの準備
 		auto data = new Macros;
@@ -92,6 +95,7 @@ void main(string[] args)
 		data["v_style"] = new MacroItem;
 		data["version"] = new MacroItem;
 		data["project"] = new MacroItem;
+		data["target"] = new MacroItem;
 		data["starts_with"] = new MacroItem("/**");
 		data["ends_with"] = new MacroItem("*/");
 		data["max_version_lines"] = new MacroItem("20");
@@ -102,7 +106,8 @@ void main(string[] args)
 		getopt( args
 		      , config.caseInsensitive
 		      , "ver|version", ( string k, string ver ){ data.fixAssign( "version", ver ); }
-		      , "prj|project", ( string k, string prj ){ data.fixAssign( "project", prj ); } );
+		      , "prj|project", ( string k, string prj ){ data.fixAssign( "project", prj ); }
+		      , "target", ( string k, string tgt ){ data.fixAssign( "target", tgt ); } );
 
 		// v-style.xml ファイルの探索
 		Search search = new Search;
@@ -110,15 +115,27 @@ void main(string[] args)
 		search.entry( getenv("HOME") );
 		search.entry( std.path.dirName(args[0]) );
 
+		auto targetLastModified = timeLastModified( data["target"], SysTime.min );
 		foreach(one ; args[1..$])
 		{
 			if( one.endsWith( ".xml" ) ) data["v_style_file"] = one;
-			else data["source_files"] ~= one;
+			else if( one.exists )
+			{
+				if( targetLastModified <= one.timeLastModified )
+				{
+					Output.logln( one, " が更新されました。" );
+					data["source_files"] ~= one;
+				}
+			}
 		}
 		data.fixAssign( "v_style_file", enforce( search.abs(data["v_style_file"])
-		                                       , data["v_style_file"] ~ " is not found." ) );
+		                                       , data["v_style_file"] ~ " は見つかりませんでした。" ) );
 
-		enforce( data.have("source_files"), "there are no target files in the argument." );
+		if( !data.have("source_files" ) )
+		{
+			Output.ln( "更新されたファイルはありません。" );
+			return;
+		}
 
 		// v-style.xml のヘッダを先にパース。
 		auto parser = new StyleParser( to!string( read( data["v_style_file"] ) ), data );
@@ -136,7 +153,7 @@ void main(string[] args)
 		{
 			try
 			{
-				enforce(exists(filename), filename ~ " is not found.");
+				enforce(exists(filename), filename ~ " が見つかりませんでした。");
 
 				string file_cont = stripLeft(cast(string)read(filename));
 				string save_cont = file_cont;
@@ -173,7 +190,7 @@ void main(string[] args)
 			catch( Throwable t )
 			{
 				string str = t.toString; // <------------------------------------------ BUG
-				output.errorln( str );
+				Output.errorln( str );
 			}
 		}
 
@@ -183,6 +200,6 @@ void main(string[] args)
 	catch( Throwable t )
 	{
 		string str = t.toString; // <---------------------------------------------- BUG
-		output.error( str );
+		Output.error( str );
 	}
 }
