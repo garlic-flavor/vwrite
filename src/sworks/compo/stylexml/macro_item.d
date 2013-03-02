@@ -1,6 +1,6 @@
 /** 追記の可不可を変更できる文字列
- * Version:      0.27(dmd2.060)
- * Date:         2012-Oct-29 01:24:08
+ * Version:      0.28(dmd2.062)
+ * Date:         2013-Mar-02 20:15:11
  * Authors:      KUMA
  * License:      CC0
  */
@@ -23,7 +23,7 @@ class MacroItem
 		this.separator = separator;
 	}
 
-	public string toString() @property { return to!string( joiner( _value, separator) );}
+	public override string toString() @property { return to!string( joiner( _value, separator) );}
 	public string[] toArray() nothrow @property { return _value[]; }
 	public bool isEmpty() const nothrow @property { return 0 == _value.length; }
 

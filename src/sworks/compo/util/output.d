@@ -1,6 +1,6 @@
 /** コンソールへの出力を制御する。
- * Version:      0.27(dmd2.060)
- * Date:         2012-Oct-29 01:24:08
+ * Version:      0.28(dmd2.062)
+ * Date:         2013-Mar-02 20:15:11
  * Authors:      KUMA
  * License:      CC0
  */
@@ -63,7 +63,7 @@ struct Output
 		if( _file !is stdout && _file !is stderr ) foreach( one ; msg ) _file.write( one.to!string );
 		else
 		{
-			version( Windows ) foreach( one ; msg ) _file.write( one.to!string.toMBS.c );
+			version( Windows ) foreach( one ; msg ) _file.write( one.toMBS.c );
 			else foreach( one ; msg ) _file.write( one.to!string );
 		}
 	}
@@ -88,7 +88,6 @@ struct Output
 	{
 		if(_mode & MODE.LOG) { _out( msg ); }
 	}
-
 
 	/// 現在の冗長度に関係なく debug コンパイル時のみ出力される。
 	public void debln( T ... )( lazy T msg )

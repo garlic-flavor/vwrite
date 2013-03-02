@@ -1,6 +1,6 @@
 /**
- * Version:      0.27(dmd2.060)
- * Date:         2012-Oct-29 01:25:20
+ * Version:      0.28(dmd2.062)
+ * Date:         2013-Mar-02 20:15:11
  * Authors:      KUMA
  * License:      CC0
  **/
@@ -113,7 +113,8 @@ void main(string[] args)
 		Search search = new Search;
 		search.entry(".");
 		search.entry( getenv("HOME") );
-		search.entry( std.path.dirName(args[0]) );
+		version(Windows) search.entry( std.path.dirName(args[0]) );
+		version(linux) search.entry( std.path.dirName( shell("which vwrite") ) );
 
 		auto targetLastModified = timeLastModified( data["target"], SysTime.min );
 		foreach(one ; args[1..$])
