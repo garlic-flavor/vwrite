@@ -1,156 +1,123 @@
-はじめにお読み下さい。 - VWRITE -
-========================================
-これは D言語で書かれたソースコードの先頭にヴァージョン情報を付加するプログラムです。
+VWRITE - Version WRITEr -
+=========================
+This program appends some informations to your D source code.
 
-付属の vwrite.exe は x86 Windows 用のバイナリです。
+Expected character code of the source code is UTF-8(non-BOM) only.
+
+_!!!NOTICE!!!_
+--------
+__THIS PROGRAM WILL CHANGE YOUR PROJECT'S WHITE SPACING RULE ACCRODING TO
+THE RULE OF DMD!__
+
+WHITE SPACING RULE OF DMD
+-------------------------
+* `'\t'`(tab character) is not allowed.
+* trailing spaces are not allowed.
+* Newline sequence other than `'\n'`(unix style) is not allowed.
+
+HOW TO USE
+----------
+
+    >vwrite --setversion x.x source.d
+
+### Options
+
+    -h --help -? /?     : show help messages and exit.
+
+    --authors YOU       : set the project's author as YOU.
+    --license LICENSE   : put your project to under LICENSE.
+    --project MYPROJECT : set your project's name as MYPROJECT
+    --setversion XXX.x  : set your project's version string as XXX.x.
+    --version           : show the version of vwrite.
+
+
+ACKNOWLEDGEMENTS
+----------------
+* vwrite is written by D Programming Language.->
+[Digital Mars D Programming Language](http://dlang.org/"D PROGRAMMING LANGUAGE")
+
+LICENSE
+-------
+[CC0](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons Zero License")
+
+
+HISTORY
+-------
+- 2015 12/13 ver. 0.29(dmd2.069.2)
+
+  fully brush up.
+
+  + delete v-style.xml.
+  + use command line argument for all settings.
+  + delete -target.
+  + add checking process of white spacing style.
+  + add English README.md.
+
+
+* * *
+
+
+はじめにお読み下さい。 - VWRITE -
+=================================
+これは D言語で書かれたソースコードにヴァージョン情報を付加するプログラムです。
 
 ソースコードに使える文字コードは UTF-8(non-BOM) のみです。
 
 
+_!!!注意!!!_
+------------
+
+__このプログラムは対象ソースコードの改行コードとインデント文字を変更します!__
+
+
+DMDルール
+---------
+* `'\t'`(タブ文字)を使わない。
+* 行末の空白文字はだめ。
+* 改行コードは`'\n'`のみ。
+
+
 使い方
-------------------------------
+------
 コマンドラインから使います。
 
-		>vwrite -version=x.x [v-style.xml] [source.d ...]
+    >vwrite --setversion=x.x source.d [...]
 
 
 ### オプション
--h --help -? /?    : ヘルプメッセージを出力します。
--version           : ヴァージョン文字列を指定します。
--prj               : プロジェクトの名前を指定します。
--target            : ここに指定したファイルよりも新しいもののみ更新されます。
 
+    -h --help -? /?     : ヘルプメッセージを出力します。
 
-### 設定ファイル
-
-xml 形式で書かれた設定ファイル v-style.xml で出力を制御します。
-
-v-style.xml は以下の順序で探索されます。
-
-  1. コマンドライン引数のうち、'.xml' を拡張子に持つもの。
-  2. カレントディレクトリにある、'v-style.xml' という名前のファイル。
-  3. 環境変数 HOME のディレクトリにある、'v-style.xml' という名前のファイル。
-  4. vwrite.exe と同じディレクトリにある、'v-style.xml' という名前のファイル。
-
-
-#### 設定ファイルで利用可能なタグ
-- `<style>`
-
-  ルートタグ。
-
-  `<environment>` が必須要素
-
-- `<head>`
-
-  マクロへの値の設定は、この中で行います。
-
-  `<set>` タグ、`<add>` タグ及び、`<ifdef>`、`<ifndef>` タグが使用可能です。
-
-  `<head>` タグは、`<style>` 要素の中で、`<environment>` 要素の前か、`<environment>` 要素の中で、
-  `<body>` 要素の前に置くことができます。
-
-
-- `<ifdef>`
-
-  `'id'` 属性で指定した名前のマクロが登録されていた場合、要素の内容が反映されます。
-
-  `'id'` 属性が必須属性です。
-
-
-- `<ifndef>`
-
-  `<ifdef>` の反対。
-
-
-- `<set>`
-
-  内容が `'id'` 属性で指定した名前で、マクロへ登録されます。
-
-  マクロが既に存在する場合は、それを上書きします。
-
-  この要素の内容には、`<ws>` タグ、`<br>` タグ、`<tab>` タグ及び、`<get>` タグを含めることができます。
-
-  `<get>` タグは、現在のマクロが展開されるときに評価されます。
-
-  `'id'` 属性が必須属性です。
-
-
-- `<add>`
-
-  `<set>` とはちがい、値を追加します。
-
-
-- `<environment>`
-
-  `<environment>` タグは複数書くことができます。
-
-  事前に、`'env'` という名前でマクロが登録されていると、
-  `<environment>` タグの `'id'` 属性の値とマッチしたものが評価されます。
-  `'env'` マクロが存在しない場合は、最初の `<environment>` が評価されます。
-
-  `'id'` 属性が必須属性です。
-
-  `<body>` 要素が必須要素です。
-
-
-- `<body>`
-
-  この要素内の、タグ以外のテキストはそのまま Makefile へ出力されます。
-
-  行頭、行末の空白文字は消去されます。それ以外の空白はそのまま残されます。
-
-  この要素の内容には、`<ws>` タグ、`<tab>` タグ、`<br>` タグ、`<get>` タグ及び、`<ifdef>`、`<ifndef>`
-  タグを含めることが出来ます。
-
-  文字実体参照は std.xml によって変換されます。
-
-
-- `<ws>`
-
-  Makefileに ' '(スペース)を出力します。`'length'` 属性を指定すれば、連続した空白を出力できます。
-
-
-- `<tab>`
-
-  タブ文字を出力します。
-
-
-- `<br>`
-
-  改行を出力します。
-
-  初期状態では、CR+LF を出力しますが、これは事前に、`'bracket'` という名前でマクロを登録しておくことで
-  変更できます。
-
-  `bracket=rn` で CR+LFに、
-  `bracket=n` で LF に、
-  `bracket=r` で CR に設定されます。
-
-
-- `<get>`
-
-  `'id'` 属性の名前で登録されているマクロの値を展開します。
-  未登録のマクロを指定した場合はなにも出力されません。
-
-  `'from'` 属性と `'to'` 属性を指定すると、std.array.replace による置換を適用できます。
-
-  `'id'` 属性が必須属性です。
+    --authors 名無し    : プロジェクトの著者を'名無し'とします。
+    --license NYSL      : プロジェクトのライセンスを'NYSL'とします。
+    --project MYPROJECT : プロジェクト名を'MYPROJECT'とします。
+    --setversion XXX.x  : ヴァージョン文字列を指定します。
+    --version           : vwrite のヴァージョン情報を表示します。
 
 
 謝辞
-------------------------------
-vwrite は D言語で書かれています。
-
-[Digital Mars D Programming Language](http://dlang.org/ "D PROGRAMMING LANGUAGE")
+----
+* vwrite は D言語で書かれています。->[Digital Mars D Programming Language](http://dlang.org/ "D PROGRAMMING LANGUAGE")
 
 
 ライセンス
-------------------------------
+----------
 [CC0](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons Zero License")
 
 
 履歴
-------------------------------
+----
+- 2015 12/13 ver. 0.29(dmd2.069.2)
+
+  全面刷新。
+
+  + v-style.xml の廃止
+  + 情報はコマンドライン引数で指定するように。
+  + -target の廃止
+  + 空白文字に関する慣習をDMD準拠に。
+  + 英語版 README.md の追加。
+
+
 - 2013 03/02 ver. 0.28(dmd2.062)
 
   linuxで v-style.xml を探せないバグの修正。

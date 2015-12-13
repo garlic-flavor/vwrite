@@ -56,7 +56,7 @@ run :
 edit :
 	emacs $(TO_COMPILE)
 remake :
-	amm linux32.mak "v=0.28(dmd2.062)" -ofvwrite.out src/sworks/vwrite/main.d $(FLAG)
+	amm -m64 linux64.mak "v=0.28(dmd2.062)" -ofvwrite.out src/sworks/vwrite/main.d $(FLAG)
 
 debug :
 	ddbg $(TARGET)

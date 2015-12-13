@@ -1,206 +1,208 @@
-/**
- * Version:      0.28(dmd2.062)
- * Date:         2013-Mar-02 20:15:11
- * Authors:      KUMA
- * License:      CC0
+/** verifying of D source codes.
+ * Version:    0.29(dmd2.069.2)
+ * Date:       2015-Dec-14 01:28:22
+ * Authors:    KUMA
+ * License:    CC0
  **/
 module sworks.vwrite.main;
-import std.file, std.datetime, std.getopt, std.process, std.conv, std.exception, std.string, std.path;
-import sworks.compo.util.search;
-import sworks.compo.util.output;
-import sworks.compo.stylexml.macros;
-import sworks.compo.stylexml.parser;
 
-string help= q"HELP
-Version Writer v0.27(dmd2.060). written by KUMA.
+import sworks.base.output;
+
+enum _VERSION_ = "0.29(dmd2.069.2)";
+enum _AUTHORS_ = "KUMA";
+
+enum header = "Version Writer ver " ~ _VERSION_ ~ ". written by "
+            ~ _AUTHORS_ ~ ".";
+enum help= header ~ q"HELP
+
+set version string. and verify white space styles as of DMD-style.
 
 ** syntax
-$>vwrite -version=x.x -target=foo.exe [v-style.xml] [source.d ...]
+$>vwrite OPT [source.d ...]
 
-foo.exe よりも新しいファイルのみ書き替えられます。
+** Options
+--help                : show this help messages.
+--version             : show the version of vwrite.
+--setversion 00000    : set version as 00000.
+--project MY_PROJECT  : set project name as MY_PROJECT.
+--authors MY_NAME     : set project's authors as MY_NAME.
+--license MY_L        : put your project to under MY_L.
+
+** DMD white space styles.
+o tab is not allowed.
+o trailing spaces are not allowed.
+o newline sequence other than '\n' is not allowed.
 HELP";
 
-/// 一行切り出し。
-string chomp_line( ref string cont )
+enum RIGHT_NEWLINE = "\n";
+enum RIGHT_INDENTATION = "    ";
+
+enum PROJECT_TAG = "project";
+enum VERSION_TAG = "version";
+enum DATE_TAG = "date";
+enum AUTHORS_TAG = "authors";
+enum LICENSE_TAG = "license";
+enum DOC_FORMAT = "%-12s%s";
+
+template DocMatchRegex(string TAG)
 {
-	size_t i;
-	enum FLAG : uint
-	{
-		NONE = 0,
-		RETURN = 1,
-		NEWLINE = 2,
-	}
-	FLAG flag = FLAG.NONE;
-	for( i = 0 ; i < cont.length ; ++i )
-	{
-		if( '\r' == cont[i] )
-		{
-			if( flag & FLAG.RETURN ) { i++; break; }
-			else flag |= FLAG.RETURN;
-		}
-		else if( '\n' == cont[i] )
-		{
-			if( flag & FLAG.NEWLINE ) { i++; break; }
-			else flag |= FLAG.NEWLINE;
-		}
-		else if( FLAG.NONE != flag ) break;
-	}
-	
-	string result = cont[ 0 .. i ];
-	cont = cont[ i .. $ ];
-	return result;
+    import std.regex : ctRegex;
+    import std.string : capitalize;
+    enum DocMatchRegex = ctRegex!(r"(?<=^[\s\*\+]*)" ~ TAG.capitalize
+                                  ~ ":[^\n]*$", "gim");
+}
+
+template EnumMatchRegex(string NAME)
+{
+    import std.regex : ctRegex;
+    import std.string : toUpper;
+    enum EnumMatchRegex = ctRegex!(r"(?<=^\s*)enum\s+_" ~ NAME.toUpper
+                                   ~ r"_\b.*$", "gm");
+}
+
+auto docString(string tag, string name)
+{
+    import std.array : appender;
+    import std.format : formattedWrite;
+    import std.string : capitalize;
+    auto buf = "".appender;
+    buf.formattedWrite(DOC_FORMAT, tag.capitalize ~ ":", name);
+    return buf.data;
+}
+
+auto enumString(string name, string val)
+{
+    import std.string : join, toUpper;
+    return ["enum _", name.toUpper, "_ = \"", val, "\";"].join;
 }
 
 //
 void main(string[] args)
 {
-	try
-	{
-		// ヘルプが必要かどうか。
-		if( args.length <= 1 ) return Output.ln( help );
-		bool needs_help = false;
-		optionChar = '/';
-		getopt( args
-		      , config.caseInsensitive
-		      , config.passThrough
-		      , "help|h|?", &needs_help );
-		if( needs_help ) return Output.ln( help );
 
-		optionChar = '-';
-		getopt( args
-		      , config.caseInsensitive
-		      , config.passThrough
-		      , "help|h|?", &needs_help );
-		if( needs_help ) return Output.ln( help );
+    try
+    {
+        import std.getopt : getopt, config, optionChar;
 
-		// 冗長性の決定
-		bool is_verbose = false;
-		getopt( args
-		      , config.caseInsensitive
-		      , config.passThrough
-		      , "verbose|v", &is_verbose );
-		if( is_verbose ) Output.mode = Output.MODE.VERBOSE;
+        // ヘルプが必要かどうか。
+        if (args.length <= 1) return help.outln;
 
-		// マクロの準備
-		auto data = new Macros;
+        bool needs_help = false;
+        optionChar = '/';
+        getopt( args
+              , config.caseInsensitive
+              , config.passThrough
+              , "help|h|?", &needs_help );
+        if (needs_help) return help.outln;
 
-		version( Windows ) data["bracket"] = new BracketItem("rn");
-		version( linux ) data["bracket"] = new BracketItem( "n" );
+        bool show_version = false;
+        optionChar = '-';
+        getopt( args
+              , config.caseInsensitive
+              , config.passThrough
+              , "help|h|?", &needs_help
+              , "version", &show_version );
+        if      (needs_help) return help.outln;
+        else if (show_version) return header.outln;
 
-		
-		data["date"] = new MacroItem( (cast(DateTime)Clock.currTime).toSimpleString );
+        // 冗長性の決定
+        bool is_verbose = false;
+        getopt( args
+              , config.caseInsensitive
+              , config.passThrough
+              , "verbose", &is_verbose );
+        if (is_verbose) Output.mode = Output.MODE.VERBOSE;
 
-		data["v_style_file"] = new MacroItem("v-style.xml");
-		data["source_files"] = new MacroItem;
-		data["v_style"] = new MacroItem;
-		data["version"] = new MacroItem;
-		data["project"] = new MacroItem;
-		data["target"] = new MacroItem;
-		data["starts_with"] = new MacroItem("/**");
-		data["ends_with"] = new MacroItem("*/");
-		data["max_version_lines"] = new MacroItem("20");
-		data["filename"] = new MacroItem;
-		data["basename"] = new MacroItem;
+        // プロジェクト名、ヴァージョン名、著者、ライセンスの取得
+        import std.array : Appender;
+        import std.format : formattedWrite;
+        string projectName, versionName, licenseName, authorsName;
+        getopt( args
+              , config.caseInsensitive
+              , "p|project", &projectName
+              , "v|setversion", &versionName
+              , "l|license", &licenseName
+              , "a|authors", &authorsName );
 
-		// コマンドライン引数からのマクロの設定
-		getopt( args
-		      , config.caseInsensitive
-		      , "ver|version", ( string k, string ver ){ data.fixAssign( "version", ver ); }
-		      , "prj|project", ( string k, string prj ){ data.fixAssign( "project", prj ); }
-		      , "target", ( string k, string tgt ){ data.fixAssign( "target", tgt ); } );
+        // 正規表現の準備
+        import std.regex : ctRegex, replaceAll;
+        alias CRLF_MATCH = ctRegex!(r"\r\n", "gs");
+        alias CR_MATCH = ctRegex!(r"\r", "gs");
+        alias TAB_MATCH = ctRegex!(r"\t", "g");
+        alias TRAIL_SPACES_MATCH = ctRegex!(r"[ \t]+(?=\n)", "gs");
 
-		// v-style.xml ファイルの探索
-		Search search = new Search;
-		search.entry(".");
-		search.entry( getenv("HOME") );
-		version(Windows) search.entry( std.path.dirName(args[0]) );
-		version(linux) search.entry( std.path.dirName( shell("which vwrite") ) );
+        alias PROJECT_MATCH = DocMatchRegex!PROJECT_TAG;
+        alias PROJECT_MATCH2 = EnumMatchRegex!PROJECT_TAG;
+        alias VERSION_MATCH = DocMatchRegex!VERSION_TAG;
+        alias VERSION_MATCH2 = EnumMatchRegex!VERSION_TAG;
+        alias DATE_MATCH = DocMatchRegex!DATE_TAG;
+        alias AUTHORS_MATCH = DocMatchRegex!AUTHORS_TAG;
+        alias AUTHORS_MATCH2 = EnumMatchRegex!AUTHORS_TAG;
+        alias LICENSE_MATCH = DocMatchRegex!LICENSE_TAG;
+        alias LICENSE_MATCH2 = EnumMatchRegex!LICENSE_TAG;
 
-		auto targetLastModified = timeLastModified( data["target"], SysTime.min );
-		foreach(one ; args[1..$])
-		{
-			if( one.endsWith( ".xml" ) ) data["v_style_file"] = one;
-			else if( one.exists )
-			{
-				if( targetLastModified <= one.timeLastModified )
-				{
-					Output.logln( one, " が更新されました。" );
-					data["source_files"] ~= one;
-				}
-			}
-		}
-		data.fixAssign( "v_style_file", enforce( search.abs(data["v_style_file"])
-		                                       , data["v_style_file"] ~ " は見つかりませんでした。" ) );
+        // 処理本体
+        import std.path : extension;
+        import std.datetime : SysTime, Clock;
+        import std.file : exists, getTimes, setTimes, read, write;
+        import std.conv : to;
+        import std.functional : binaryReverseArgs;
+        foreach(one; args) // 全ての引数に対して。
+        {
+            auto ext = one.extension; // 拡張子でD言語のだけ選ぶ。
+            if (ext != ".d" && ext != ".di")
+            {
+                logln(one ~ " is not a D source.");
+                continue;
+            }
 
-		if( !data.have("source_files" ) )
-		{
-			Output.ln( "更新されたファイルはありません。" );
-			return;
-		}
+            if (!one.exists) // 存在しないのははぶく。
+            {
+                outln(one, " is not found.");
+                continue;
+            }
 
-		// v-style.xml のヘッダを先にパース。
-		auto parser = new StyleParser( to!string( read( data["v_style_file"] ) ), data );
-		parser.parseHead();
+            logln("start with ", one);
+            Output.incIndent;
 
-		int max_version_lines = to!int( data["max_version_lines"] );
-		string starts_with = data["starts_with"];
-		string ends_with = data["ends_with"];
-		string bracket = data["bracket"];
+            SysTime aTime, mTime;
+            one.getTimes(aTime, mTime);
+            logln("last access time : ", aTime);
+            logln("last modified time : ", mTime);
 
-		/** それぞれのファイルに対して置換を実行する.
-		 * \param filename 対象のファイル。
-		 */
-		void vwrite(string filename)
-		{
-			try
-			{
-				enforce(exists(filename), filename ~ " が見つかりませんでした。");
+            // 変換本体
+            one.read.to!string
+                .replaceAll(CRLF_MATCH, RIGHT_NEWLINE)
+                .replaceAll(CR_MATCH, RIGHT_NEWLINE)
+                .replaceAll(TAB_MATCH, RIGHT_INDENTATION)
+                .replaceAll(TRAIL_SPACES_MATCH, "")
 
-				string file_cont = stripLeft(cast(string)read(filename));
-				string save_cont = file_cont;
-				string header, footer;
-				if( 0 < file_cont.startsWith( starts_with ) )
-				{
-					header = file_cont.chomp_line;
+                .replaceAll( PROJECT_MATCH
+                           , PROJECT_TAG.docString(projectName) )
+                .replaceAll( PROJECT_MATCH2
+                           , PROJECT_TAG.enumString(projectName) )
+                .replaceAll( VERSION_MATCH
+                           , VERSION_TAG.docString(versionName) )
+                .replaceAll( VERSION_MATCH2
+                           , VERSION_TAG.enumString(versionName) )
+                .replaceAll(DATE_MATCH, DATE_TAG.docString(mTime.toString))
+                .replaceAll( AUTHORS_MATCH
+                           , AUTHORS_TAG.docString(authorsName) )
+                .replaceAll( AUTHORS_MATCH2
+                           , AUTHORS_TAG.enumString(authorsName) )
+                .replaceAll( LICENSE_MATCH
+                           , LICENSE_TAG.docString(licenseName) )
+                .replaceAll( LICENSE_MATCH2
+                           , LICENSE_TAG.enumString(licenseName) )
 
-					size_t counter = 0;
-					if( 0 <= header.indexOf( ends_with ) ) counter = max_version_lines;
+                .binaryReverseArgs!write(one);
 
-					for( ; counter < max_version_lines ; ++counter)
-					{
-						footer = file_cont.chomp_line;
-						if( 0 <= footer.indexOf( ends_with ) ) break;
-						else footer.length = 0;
-					}
-					if( max_version_lines <= counter )
-					{
-						file_cont = save_cont;
-						header.length = 0;
-						footer.length = 0;
-					}
-				}
+            // 編集時間を戻す。
+            one.setTimes(Clock.currTime, mTime);
 
-				if( 0 == header.length ) header = starts_with ~ bracket;
-				if( 0 == footer.length ) footer = ends_with ~ bracket;
-
-				data["filename"] = filename;
-				data["basename"] = std.path.baseName(filename);
-
-				std.file.write(filename, header ~ parser.parseBody() ~ footer ~ file_cont);
-			}
-			catch( Throwable t )
-			{
-				string str = t.toString; // <------------------------------------------ BUG
-				Output.errorln( str );
-			}
-		}
-
-		// 入力された全てのファイルに対して vwrite を実行。
-		foreach( one ; data.get("source_files").toArray ) { vwrite( one ); }
-	}
-	catch( Throwable t )
-	{
-		string str = t.toString; // <---------------------------------------------- BUG
-		Output.error( str );
-	}
+            logln("done.");
+            Output.decIndent;
+        }
+    }
+    catch (Throwable t) t.toString.errorOut;
 }
