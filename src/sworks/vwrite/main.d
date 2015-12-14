@@ -1,6 +1,6 @@
 /** verifying of D source codes.
- * Version:    0.29(dmd2.069.2)
- * Date:       2015-Dec-14 01:28:22
+ * Version:    0.30(dmd2.069.2)
+ * Date:       2015-Dec-14 16:17:17
  * Authors:    KUMA
  * License:    CC0
  **/
@@ -8,14 +8,43 @@ module sworks.vwrite.main;
 
 import sworks.base.output;
 
-enum _VERSION_ = "0.29(dmd2.069.2)";
+enum _VERSION_ = "0.30(dmd2.069.2)";
 enum _AUTHORS_ = "KUMA";
 
 enum header = "Version Writer ver " ~ _VERSION_ ~ ". written by "
             ~ _AUTHORS_ ~ ".";
-enum help= header ~ q"HELP
 
-set version string. and verify white space styles as of DMD-style.
+version(InJapanese)
+{
+    enum help = header ~ r"
+
+D言語のソースコードにヴァージョン情報を付加します。
+空白文字に関する慣習をDMD準拠のものにします。
+
+** 構文
+$>vwrite OPT [source.d ...]
+
+** Options
+--help                : この説明文を表示します。
+--version             : vwrite のヴァージョン情報を表示します。
+
+--authors MY_NAME     : 処理対象プロジェクトの著者情報を設定します。
+--license MY_L        : プロジェクトの権利条項を設定します。
+--project MY_PROJECT  : プロジェクト名を設定します。
+--setversion 00000    : プロジェクトのヴァージョン情報を設定します。
+
+** DMD の空白文字規則では、
+o タブ文字は使用できません。
+o 行末に空白文字を使用できません。
+o '\n'以外の改行文字を使用できません。
+";
+}
+else
+{
+    enum help = header ~ q"HELP
+
+Set version strings to your project.
+And verify white space styles as of DMD style.
 
 ** syntax
 $>vwrite OPT [source.d ...]
@@ -23,16 +52,18 @@ $>vwrite OPT [source.d ...]
 ** Options
 --help                : show this help messages.
 --version             : show the version of vwrite.
---setversion 00000    : set version as 00000.
---project MY_PROJECT  : set project name as MY_PROJECT.
+
 --authors MY_NAME     : set project's authors as MY_NAME.
 --license MY_L        : put your project to under MY_L.
+--project MY_PROJECT  : set project name as MY_PROJECT.
+--setversion XXX.x    : set your project's version as XXX.x.
 
 ** DMD white space styles.
 o tab is not allowed.
 o trailing spaces are not allowed.
 o newline sequence other than '\n' is not allowed.
 HELP";
+}
 
 enum RIGHT_NEWLINE = "\n";
 enum RIGHT_INDENTATION = "    ";
@@ -152,23 +183,40 @@ void main(string[] args)
             auto ext = one.extension; // 拡張子でD言語のだけ選ぶ。
             if (ext != ".d" && ext != ".di")
             {
-                logln(one ~ " is not a D source.");
+                version(InJapanese)
+                    logln(one, " はD言語のソースコードではありません。");
+                else
+                    logln(one, " is not a D source.");
                 continue;
             }
 
             if (!one.exists) // 存在しないのははぶく。
             {
-                outln(one, " is not found.");
+                version(InJapanese)
+                    logln(one, " は存在しません。");
+                else
+                    outln(one, " is not found.");
                 continue;
             }
 
-            logln("start with ", one);
+            version(InJapanese)
+                logln(one, " の処理を開始します。");
+            else
+                logln("start the process about ", one);
             Output.incIndent;
 
             SysTime aTime, mTime;
             one.getTimes(aTime, mTime);
-            logln("last access time : ", aTime);
-            logln("last modified time : ", mTime);
+            version(InJapanese)
+            {
+                logln("最終読み取り時刻 : ", aTime);
+                logln("最終編集時刻     : ", mTime);
+            }
+            else
+            {
+                logln("last access time   : ", aTime);
+                logln("last modified time : ", mTime);
+            }
 
             // 変換本体
             one.read.to!string
@@ -200,7 +248,10 @@ void main(string[] args)
             // 編集時間を戻す。
             one.setTimes(Clock.currTime, mTime);
 
-            logln("done.");
+            version(InJapanese)
+                logln("終了。");
+            else
+                logln("done.");
             Output.decIndent;
         }
     }

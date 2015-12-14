@@ -1,5 +1,5 @@
 /** コンソールへの出力を制御する。
- * Version:    0.29(dmd2.069.2)
+ * Version:    0.30(dmd2.069.2)
  * Date:       2015-Dec-13 20:27:09
  * Authors:    KUMA
  * License:    CC0

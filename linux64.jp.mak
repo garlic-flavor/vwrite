@@ -7,12 +7,12 @@ AUTHORS = KUMA
 LICENSE = CC0
 VERSION = 0.30(dmd2.069.2)
 
-MAKEFILE = linux64.mak
+MAKEFILE = linux64.jp.mak
 DC = dmd
 MAKE = gmake
 TO_COMPILE = src/sworks/base/output.d src/sworks/vwrite/main.d
 TO_LINK = src/sworks/base/output.o src/sworks/vwrite/main.o
-COMPILE_FLAG = -m64 -Isrc
+COMPILE_FLAG = -m64 -version=InJapanese -Isrc
 LINK_FLAG = -m64
 EXT_LIB =
 DDOC_FILE =
@@ -53,7 +53,7 @@ run :
 edit :
 	emacs $(TO_COMPILE)
 remake :
-	amm -m64 -ofvwrite.out linux64.mak src/sworks/vwrite/main.d "v=0.30(dmd2.069.2)" authors=KUMA license=CC0 $(FLAG)
+	amm -m64 -ofvwrite.out -version=InJapanese linux64.jp.mak src/sworks/vwrite/main.d "v=0.30(dmd2.069.2)" authors=KUMA license=CC0 $(FLAG)
 
 debug :
 	ddbg $(TARGET)
