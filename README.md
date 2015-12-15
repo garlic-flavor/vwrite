@@ -1,8 +1,8 @@
 VWRITE - Version WRITEr -
 =========================
-This program appends some informations to your D source code.
+This program appends some informations to your D source codes.
 
-Expected character code of the source code is UTF-8(non-BOM) only.
+Expected character coding of the source code is UTF-8(non-BOM) only.
 
 _!!!NOTICE!!!_
 --------
@@ -18,18 +18,49 @@ WHITE SPACING RULE OF DMD
 HOW TO USE
 ----------
 
-    >vwrite --setversion x.x source.d
+    >vwrite [OPT...] source.d[...]
 
 ### Options
 
     -h --help -? /?     : show help messages and exit.
+    --version           : show the version of vwrite.
 
     --authors YOU       : set the project's author as YOU.
     --license LICENSE   : put your project to under LICENSE.
     --project MYPROJECT : set your project's name as MYPROJECT
     --setversion XXX.x  : set your project's version string as XXX.x.
-    --version           : show the version of vwrite.
 
+
+WHAT WILL THIS PROGRAM DO?
+--------------------------
+this program will
+
+1. read informations about your project from command line arguments.
+   1. `'--project MYPROJECT'` gives the name of the project.
+   2. `'--setversion XXX.x'` gives the description of the version.
+   3. `'--authors YOU'` gives names of authors.
+   4. `'--license LICENSE'` gives an information about the license.
+
+2. read file names from arguments. and select files that
+   have `'.d'` or `'.di'` extension.
+
+3. read each files and do replacement accroding to the manners below.
+   1. replace `'\r\n'` with `'\n'`.
+   2. replace `'\r'` with `'\n'`.
+   3. replace `'\t'` with `'    '`(four sequential spaces).
+   4. remove tailing spaces.
+   5. replace `'Project:'` with `'Project: MYPROJECT'`.
+   6. replace `'enum _PROJECT_ ="";'` with `'enum _PROJECT_="MYPROJECT"`.
+   7. replace `'Version:'` with `'Version: XXX.x'`.
+   8. replace `'enum _VERSION_ = "";'` with `'enum _VERSION_="XXX.x"`.
+   9. replace `'Date:\'` with `'Date: YYYY-MON-DD HH:MM:SS'`.
+   10. replace `'Authors:'` with `'Authors: YOU'`.
+   11. replace `'enum _AUTHORS_ = "";'` with `'enum _AUTHORS_ = "YOU";'`.
+   12. replace `'License:'` with `'License: LICENSE'`.
+   13. replace `'enum _LICENSE_ = "";'` with `'enum _LICENSE_ = "LICENSE";'`.
+
+4. output to the file.
+5. rewind the modified time of the file.
 
 ACKNOWLEDGEMENTS
 ----------------
@@ -98,6 +129,36 @@ DMDルール
     --project MYPROJECT : プロジェクト名を'MYPROJECT'とします。
     --setversion XXX.x  : ヴァージョン文字列を指定します。
     --version           : vwrite のヴァージョン情報を表示します。
+
+
+このプログラムは何をしますか？
+------------------------------
+このプログラムは、
+1. コマンドライン引数より、プロジェクトに関する以下の情報を得ます。
+   1. `--project MYPROJECT` プロジェクトの名前を指定します。
+   2. `--setversion XXX.x` ヴァージョン情報を指定します。
+   3. `--authors YOU` 著者名を指定します。
+   4. `--license LICENSE` ライセンス情報を指定します。
+
+2. コマンドライン引数より拡張子が`'.d'`又は`'.di'`のファイル名のものを選びます。
+
+3. それぞれのファイルに対して以下の置換を行います。
+   1. `'\r\n'` を `'\n'` に
+   2. `'\r'` を `'\n'`に
+   3. `'\t'` を `'    '`(スペース4個)に
+   4. 行末の空白文字の消去
+   5. `'Project:'` を `'Project: MYPROJECT'`に
+   6. `'enum _PROJECT_ ="";'` を `'enum _PROJECT_="MYPROJECT"`に
+   7. `'Version:'` を `'Version: XXX.x'`に
+   8. `'enum _VERSION_ = "";'` を `'enum _VERSION_="XXX.x"`に
+   9. `'Date:\'` を `'Date: YYYY-MON-DD HH:MM:SS'`に
+   10. `'Authors:'` を `'Authors: YOU'`に
+   11. `'enum _AUTHORS_ = "";'` を `'enum _AUTHORS_ = "YOU";'`に
+   12. `'License:'` を `'License: LICENSE'`に
+   13. `'enum _LICENSE_ = "";'` を `'enum _LICENSE_ = "LICENSE";'`に
+
+4. 同じファイルに出力します。
+5. ファイルの最終編集時刻を書き戻します。
 
 
 謝辞

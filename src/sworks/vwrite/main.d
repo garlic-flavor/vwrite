@@ -178,6 +178,8 @@ void main(string[] args)
         import std.file : exists, getTimes, setTimes, read, write;
         import std.conv : to;
         import std.functional : binaryReverseArgs;
+        version(linux)
+            if (0 < args.length) args = args[1..$];
         foreach(one; args) // 全ての引数に対して。
         {
             auto ext = one.extension; // 拡張子でD言語のだけ選ぶ。
