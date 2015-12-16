@@ -1,12 +1,13 @@
 VWRITE - Version WRITEr -
 =========================
 This program appends some informations to your D source codes.
+and modify your coding style.
 
 Expected character coding of the source code is UTF-8(non-BOM) only.
 
 _!!!NOTICE!!!_
 --------
-__THIS PROGRAM WILL CHANGE YOUR PROJECT'S WHITE SPACING RULE ACCRODING TO
+__THIS PROGRAM WILL CHANGE YOUR PROJECT'S WHITE SPACING RULE ACCORDING TO
 THE RULE OF DMD!__
 
 WHITE SPACING RULE OF DMD
@@ -58,6 +59,11 @@ this program will
    11. replace `'enum _AUTHORS_ = "";'` with `'enum _AUTHORS_ = "YOU";'`.
    12. replace `'License:'` with `'License: LICENSE'`.
    13. replace `'enum _LICENSE_ = "";'` with `'enum _LICENSE_ = "LICENSE";'`.
+   14. replace `'if('` with `'if ('`.
+   15. replace `'for('` with `'for ('`.
+   16. replace `'foreach('` with `'foreach ('`.
+   17. replace `'version('` with `'version ('`.
+   18. replace `'catch('` with `'catch ('`.
 
 4. output to the file.
 5. rewind the modified time of the file.
@@ -67,6 +73,12 @@ ACKNOWLEDGEMENTS
 * vwrite is written by D Programming Language.->
 [Digital Mars D Programming Language](http://dlang.org/"D PROGRAMMING LANGUAGE")
 
+
+DEVELOPMENT ENVIRONMENT
+-----------------------
+* Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1
+
+
 LICENSE
 -------
 [CC0](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons Zero License")
@@ -74,6 +86,12 @@ LICENSE
 
 HISTORY
 -------
+- 2015-12-16 ver. 0.31(dmd2.069.2)
+
+  add replacing rule for `'if ('`, `'for ('`, `'foreach ('`, `'version ('`,
+  `'catch ('`.
+
+
 - 2015 12/14 ver. 0.30(dmd2.069.2)
 
   add japanese messages.
@@ -156,6 +174,11 @@ DMDルール
    11. `'enum _AUTHORS_ = "";'` を `'enum _AUTHORS_ = "YOU";'`に
    12. `'License:'` を `'License: LICENSE'`に
    13. `'enum _LICENSE_ = "";'` を `'enum _LICENSE_ = "LICENSE";'`に
+   14. `'if('` を `'if ('`に
+   15. `'for('` を `'for ('`に
+   16. `'foreach('` を `'foreach ('`に
+   17. `'version('` を `'version ('`に
+   18. `'catch('` を `'catch ('`に
 
 4. 同じファイルに出力します。
 5. ファイルの最終編集時刻を書き戻します。
@@ -166,6 +189,11 @@ DMDルール
 * vwrite は D言語で書かれています。->[Digital Mars D Programming Language](http://dlang.org/ "D PROGRAMMING LANGUAGE")
 
 
+開発環境
+--------
+* Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1
+
+
 ライセンス
 ----------
 [CC0](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons Zero License")
@@ -173,6 +201,12 @@ DMDルール
 
 履歴
 ----
+- 2015-12-16 ver. 0.31(dmd2.069.2)
+
+  `'if ('`, `'for ('`, `'foreach ('`, `'version ('`, `'catch ('`
+  に関する変換を追加。
+
+
 - 2015 12/14 ver. 0.30(dmd2.069.2)
 
   日本語メッセージの追加。

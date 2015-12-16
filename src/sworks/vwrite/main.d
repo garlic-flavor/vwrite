@@ -1,6 +1,6 @@
 /** verifying of D source codes.
- * Version:    0.30(dmd2.069.2)
- * Date:       2015-Dec-14 16:17:17
+ * Version:    0.31(dmd2.069.2)
+ * Date:       2015-Dec-16 18:53:11
  * Authors:    KUMA
  * License:    CC0
  **/
@@ -8,13 +8,13 @@ module sworks.vwrite.main;
 
 import sworks.base.output;
 
-enum _VERSION_ = "0.30(dmd2.069.2)";
+enum _VERSION_ = "0.31(dmd2.069.2)";
 enum _AUTHORS_ = "KUMA";
 
-enum header = "Version Writer ver " ~ _VERSION_ ~ ". written by "
-            ~ _AUTHORS_ ~ ".";
+enum header = "Version Writer ver " ~ _VERSION_ ~ ". written by " ~
+              _AUTHORS_ ~ ".";
 
-version(InJapanese)
+version (InJapanese)
 {
     enum help = header ~ r"
 
@@ -79,16 +79,16 @@ template DocMatchRegex(string TAG)
 {
     import std.regex : ctRegex;
     import std.string : capitalize;
-    enum DocMatchRegex = ctRegex!(r"(?<=^[\s\*\+]*)" ~ TAG.capitalize
-                                  ~ ":[^\n]*$", "gim");
+    enum DocMatchRegex = ctRegex!(r"(?<=^[\s\*\+]*)" ~ TAG.capitalize ~
+                                  ":[^\n]*$", "gim");
 }
 
 template EnumMatchRegex(string NAME)
 {
     import std.regex : ctRegex;
     import std.string : toUpper;
-    enum EnumMatchRegex = ctRegex!(r"(?<=^\s*)enum\s+_" ~ NAME.toUpper
-                                   ~ r"_\b.*$", "gm");
+    enum EnumMatchRegex = ctRegex!(r"(?<=^\s*)enum\s+_" ~ NAME.toUpper ~
+                                   r"_\b.*$", "gm");
 }
 
 auto docString(string tag, string name)
@@ -120,40 +120,40 @@ void main(string[] args)
 
         bool needs_help = false;
         optionChar = '/';
-        getopt( args
-              , config.caseInsensitive
-              , config.passThrough
-              , "help|h|?", &needs_help );
+        getopt(args,
+               config.caseInsensitive,
+               config.passThrough,
+               "help|h|?", &needs_help);
         if (needs_help) return help.outln;
 
         bool show_version = false;
         optionChar = '-';
-        getopt( args
-              , config.caseInsensitive
-              , config.passThrough
-              , "help|h|?", &needs_help
-              , "version", &show_version );
+        getopt(args,
+               config.caseInsensitive,
+               config.passThrough,
+               "help|h|?", &needs_help,
+               "version", &show_version);
         if      (needs_help) return help.outln;
         else if (show_version) return header.outln;
 
         // 冗長性の決定
         bool is_verbose = false;
-        getopt( args
-              , config.caseInsensitive
-              , config.passThrough
-              , "verbose", &is_verbose );
+        getopt(args,
+               config.caseInsensitive,
+               config.passThrough,
+               "verbose", &is_verbose);
         if (is_verbose) Output.mode = Output.MODE.VERBOSE;
 
         // プロジェクト名、ヴァージョン名、著者、ライセンスの取得
         import std.array : Appender;
         import std.format : formattedWrite;
         string projectName, versionName, licenseName, authorsName;
-        getopt( args
-              , config.caseInsensitive
-              , "p|project", &projectName
-              , "v|setversion", &versionName
-              , "l|license", &licenseName
-              , "a|authors", &authorsName );
+        getopt(args,
+               config.caseInsensitive,
+               "p|project", &projectName,
+               "v|setversion", &versionName,
+               "l|license", &licenseName,
+               "a|authors", &authorsName);
 
         // 正規表現の準備
         import std.regex : ctRegex, replaceAll;
@@ -172,20 +172,26 @@ void main(string[] args)
         alias LICENSE_MATCH = DocMatchRegex!LICENSE_TAG;
         alias LICENSE_MATCH2 = EnumMatchRegex!LICENSE_TAG;
 
+        alias IF_STYLE_MATCH =
+            ctRegex!(r"\b(if|for|foreach|version|catch)\(", "g");
+        alias OPEN_BRACKET_STYLE_MATCH = ctRegex!(r"(\(\[)\s+", "g");
+        alias CLOSE_BRACKET_STYLE_MATCH = ctRegex!(r"\s+(\)\])", "g");
+        alias COMMA_STYLE_MATCH = ctRegex!(r"\n(\s*),\s*", "gs");
+
         // 処理本体
         import std.path : extension;
         import std.datetime : SysTime, Clock;
         import std.file : exists, getTimes, setTimes, read, write;
         import std.conv : to;
         import std.functional : binaryReverseArgs;
-        version(linux)
+        version (linux)
             if (0 < args.length) args = args[1..$];
-        foreach(one; args) // 全ての引数に対して。
+        foreach (one; args) // 全ての引数に対して。
         {
             auto ext = one.extension; // 拡張子でD言語のだけ選ぶ。
             if (ext != ".d" && ext != ".di")
             {
-                version(InJapanese)
+                version (InJapanese)
                     logln(one, " はD言語のソースコードではありません。");
                 else
                     logln(one, " is not a D source.");
@@ -194,14 +200,14 @@ void main(string[] args)
 
             if (!one.exists) // 存在しないのははぶく。
             {
-                version(InJapanese)
+                version (InJapanese)
                     logln(one, " は存在しません。");
                 else
                     outln(one, " is not found.");
                 continue;
             }
 
-            version(InJapanese)
+            version (InJapanese)
                 logln(one, " の処理を開始します。");
             else
                 logln("start the process about ", one);
@@ -209,7 +215,7 @@ void main(string[] args)
 
             SysTime aTime, mTime;
             one.getTimes(aTime, mTime);
-            version(InJapanese)
+            version (InJapanese)
             {
                 logln("最終読み取り時刻 : ", aTime);
                 logln("最終編集時刻     : ", mTime);
@@ -227,30 +233,35 @@ void main(string[] args)
                 .replaceAll(TAB_MATCH, RIGHT_INDENTATION)
                 .replaceAll(TRAIL_SPACES_MATCH, "")
 
-                .replaceAll( PROJECT_MATCH
-                           , PROJECT_TAG.docString(projectName) )
-                .replaceAll( PROJECT_MATCH2
-                           , PROJECT_TAG.enumString(projectName) )
-                .replaceAll( VERSION_MATCH
-                           , VERSION_TAG.docString(versionName) )
-                .replaceAll( VERSION_MATCH2
-                           , VERSION_TAG.enumString(versionName) )
+                .replaceAll(PROJECT_MATCH,
+                            PROJECT_TAG.docString(projectName))
+                .replaceAll(PROJECT_MATCH2,
+                            PROJECT_TAG.enumString(projectName))
+                .replaceAll(VERSION_MATCH,
+                            VERSION_TAG.docString(versionName))
+                .replaceAll(VERSION_MATCH2,
+                            VERSION_TAG.enumString(versionName))
                 .replaceAll(DATE_MATCH, DATE_TAG.docString(mTime.toString))
-                .replaceAll( AUTHORS_MATCH
-                           , AUTHORS_TAG.docString(authorsName) )
-                .replaceAll( AUTHORS_MATCH2
-                           , AUTHORS_TAG.enumString(authorsName) )
-                .replaceAll( LICENSE_MATCH
-                           , LICENSE_TAG.docString(licenseName) )
-                .replaceAll( LICENSE_MATCH2
-                           , LICENSE_TAG.enumString(licenseName) )
+                .replaceAll(AUTHORS_MATCH,
+                            AUTHORS_TAG.docString(authorsName))
+                .replaceAll(AUTHORS_MATCH2,
+                            AUTHORS_TAG.enumString(authorsName))
+                .replaceAll(LICENSE_MATCH,
+                            LICENSE_TAG.docString(licenseName))
+                .replaceAll(LICENSE_MATCH2,
+                            LICENSE_TAG.enumString(licenseName))
+
+                .replaceAll(IF_STYLE_MATCH, "$1 (")
+                .replaceAll(OPEN_BRACKET_STYLE_MATCH, "$1")
+                .replaceAll(CLOSE_BRACKET_STYLE_MATCH, "$1")
+                .replaceAll(COMMA_STYLE_MATCH, ",\n$1 ")
 
                 .binaryReverseArgs!write(one);
 
             // 編集時間を戻す。
             one.setTimes(Clock.currTime, mTime);
 
-            version(InJapanese)
+            version (InJapanese)
                 logln("終了。");
             else
                 logln("done.");

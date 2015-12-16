@@ -5,7 +5,7 @@
 TARGET = vwrite.out
 AUTHORS = KUMA
 LICENSE = CC0
-VERSION = 0.30(dmd2.069.2)
+VERSION = 0.31(dmd2.069.2)
 
 MAKEFILE = linux64.jp.mak
 DC = dmd
@@ -47,13 +47,13 @@ ddoc :
 show :
 	@echo ROOT = src/sworks/vwrite/main.d
 	@echo TARGET = $(TARGET)
-	@echo VERSION = 0.30(dmd2.069.2)
+	@echo VERSION = 0.31(dmd2.069.2)
 run :
 	$(TARGET) $(FLAG)
 edit :
 	emacs $(TO_COMPILE)
 remake :
-	amm -m64 -ofvwrite.out -version=InJapanese linux64.jp.mak src/sworks/vwrite/main.d "v=0.30(dmd2.069.2)" authors=KUMA license=CC0 $(FLAG)
+	amm -m64 -ofvwrite.out -version=InJapanese linux64.jp.mak src/sworks/vwrite/main.d "v=0.31(dmd2.069.2)" authors=KUMA license=CC0 $(FLAG)
 
 debug :
 	ddbg $(TARGET)

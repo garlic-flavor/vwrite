@@ -1,12 +1,12 @@
 /** コンソールへの出力を制御する。
- * Version:    0.30(dmd2.069.2)
- * Date:       2015-Dec-13 20:27:09
+ * Version:    0.31(dmd2.069.2)
+ * Date:       2015-Dec-16 18:55:04
  * Authors:    KUMA
  * License:    CC0
  */
 module sworks.base.output;
 
-version(Windows) private import sworks.win32.sjis;
+version (Windows) private import sworks.win32.sjis;
 
 /// エラー出力
 void errorOutln(T ...)(lazy T msg) { Output.errorln(msg); }
@@ -22,13 +22,14 @@ void debOutln(T ...)(lazy T msg) { Output.debln(msg); }
 void debOut(T ...)(lazy T msg) {Output.deb(msg);}
 
 /// 現在の冗長度に関係なく必ず出力される。
-void output(T ...)(lazy T msg) {Output( msg );}
-void outln(T...)( lazy T msg ) {Output.ln(msg);}
+void output(T ...)(lazy T msg) {Output(msg);}
+void outln(T...)(lazy T msg) {Output.ln(msg);}
 
 
 /// コンソールへの出力を制御する.
 struct Output
-{ static:
+{
+static:
     import std.stdio : stderr, stdout;
 
     /// 冗長度を示す
@@ -43,10 +44,9 @@ struct Output
     enum TAB_WIDTH = 4; // インデントの幅
 
 @trusted:
-
-    void open( string filename, string mode = "w" )
+    void open(string filename, string mode = "w")
     {
-        _file = File( filename, mode );
+        _file = File(filename, mode);
     }
 
     void close()
@@ -54,7 +54,7 @@ struct Output
 
     nothrow
     static this(){ _file = stdout; }
-    static ~this() { close(); }
+    static ~this() { close; }
 
     @property @nogc nothrow
     MODE mode() { return _mode; }
@@ -71,46 +71,46 @@ struct Output
     { _current_indent = 0 < _current_indent ? _current_indent-1 : 0; }
 
     /// エラー出力
-    void errorln( T ... )(lazy T msg)
+    void errorln(T ...)(lazy T msg)
     {
-        if (_mode & MODE.ERROR) { _out( msg ); _outln( ); }
+        if (_mode & MODE.ERROR) { _out(msg); _outln; }
     }
 
-    void error( T ... )( lazy T msg )
+    void error(T ...)(lazy T msg)
     {
-        if (_mode & MODE.ERROR) { _out( msg ); }
+        if (_mode & MODE.ERROR) { _out(msg); }
     }
 
     /// ログの出力。冗長度が MODE.VERBOSE の時のみ出力される。
-    void logln( T ... )( lazy T msg )
+    void logln(T ...)(lazy T msg)
     {
-        if (_mode & MODE.LOG) { _out( msg ); _outln( ); }
+        if (_mode & MODE.LOG) { _out(msg); _outln; }
     }
-    void log( T ... )( lazy T msg )
+    void log(T ...)(lazy T msg)
     {
-        if (_mode & MODE.LOG) { _out( msg ); }
+        if (_mode & MODE.LOG) { _out(msg); }
     }
 
     /// 現在の冗長度に関係なく debug コンパイル時のみ出力される。
     void debln(T ...)(lazy T msg)
     {
-        debug { _out( msg ); _outln( ); }
+        debug { _out(msg); _outln; }
     }
     void deb(T ...)(lazy T msg)
     {
-        debug { _out( msg ); }
+        debug { _out(msg); }
     }
 
     /// 現在の冗長度に関係なく必ず出力される。
-    void opCall( T ... )( lazy T msg )
+    void opCall(T ...)(lazy T msg)
     {
-        _out( msg );
+        _out(msg);
     }
 
-    void ln( T... )( lazy T msg )
+    void ln(T...)(lazy T msg)
     {
-        _out(  msg );
-        _outln();
+        _out(msg);
+        _outln;
     }
 
 private:
@@ -142,11 +142,11 @@ private:
         import std.conv : to;
         _outindent;
         if (_file !is stdout && _file !is stderr)
-            foreach(one ; msg) _file.write(one.to!string);
+            foreach (one ; msg) _file.write(one.to!string);
         else
         {
-            version(Windows) foreach(one ; msg) _file.write(one.toMBS.c);
-            else foreach(one ; msg) _file.write(one.to!string);
+            version (Windows) foreach (one ; msg) _file.write(one.toMBS.c);
+            else foreach (one ; msg) _file.write(one.to!string);
         }
     }
 
@@ -157,7 +157,7 @@ debug(output):
 import std.stdio;
 void main()
 {
-    string func(){ writeln("func are called." ); return "func"; }
+    string func(){ writeln("func are called."); return "func"; }
     Output.incIndent;
-    Output.ln( 10, 20, "hello", "world", func, "日本語" );
+    outln(10, 20, "hello", "world", func, "日本語");
 }

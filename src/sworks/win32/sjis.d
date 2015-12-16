@@ -12,21 +12,21 @@ public import sworks.compo.util.strutil;
 
 // 文字列を SHIFT-JIS文字列に.
 jstring toMBS( T )( const(T)[] msg, int codePage = 0 )
-	if( is( T == char ) || is( T == wchar ) || is( T == dchar ) || is( T == jchar ) )
+    if( is( T == char ) || is( T == wchar ) || is( T == dchar ) || is( T == jchar ) )
 {
-	static if( is( T == jchar ) ) return msg.j;
+    static if( is( T == jchar ) ) return msg.j;
 
-	bool ASCIIOnly = true;
-	for( size_t i = 0 ; i < msg.length && ASCIIOnly ; i++ ) ASCIIOnly = msg[i].isASCII;
-	if( ASCIIOnly ) return msg.to!string.j;
+    bool ASCIIOnly = true;
+    for( size_t i = 0 ; i < msg.length && ASCIIOnly ; i++ ) ASCIIOnly = msg[i].isASCII;
+    if( ASCIIOnly ) return msg.to!string.j;
 
-	auto str16 = msg.to!wstring;
-	auto result = new char[ WideCharToMultiByte( codePage, 0, str16.ptr, str16.length, null, 0
-	                                           , null, null ) ];
+    auto str16 = msg.to!wstring;
+    auto result = new char[ WideCharToMultiByte( codePage, 0, str16.ptr, str16.length, null, 0
+                                                 , null, null ) ];
 
-	enforce( 0 < result.length && result.length == WideCharToMultiByte( codePage, 0, str16.ptr
-	       , str16.length, result.ptr, result.length, null, null ) );
-	return result.j;
+    enforce( 0 < result.length && result.length == WideCharToMultiByte( codePage, 0, str16.ptr
+                                                                        , str16.length, result.ptr, result.length, null, null ) );
+    return result.j;
 }
 
 // 文字列をSHIFT-JISのNull終端文字列に。
