@@ -173,7 +173,7 @@ void main(string[] args)
         alias LICENSE_MATCH2 = EnumMatchRegex!LICENSE_TAG;
 
         alias IF_STYLE_MATCH =
-            ctRegex!(r"\b(if|for|foreach|version|catch)\(", "g");
+            ctRegex!(r"\b(if|for|foreach|version|catch|with)\(", "g");
         alias OPEN_BRACKET_STYLE_MATCH = ctRegex!(r"(\(\[)\s+", "g");
         alias CLOSE_BRACKET_STYLE_MATCH = ctRegex!(r"\s+(\)\])", "g");
         alias COMMA_STYLE_MATCH = ctRegex!(r"\n(\s*),\s*", "gs");
