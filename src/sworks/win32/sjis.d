@@ -1,95 +1,149 @@
 /** SHIFT-JIS の扱いに。
- * Version:      0.27(dmd2.060)
- * Date:         2012-Oct-29 01:24:08
- * Authors:      KUMA
- * License:      CC0
+ * Version:    0.31(dmd2.069.2)
+ * Date:       2015-Dec-17 20:02:43.2277485
+ * Authors:    KUMA
+ * License:    CC0
  */
-module sworks.compo.win32.sjis;
+module sworks.win32.sjis;
+public import sworks.base.strutil;
 
-import std.ascii, std.exception, std.conv, std.utf;
-private import std.c.windows.windows;
-public import sworks.compo.util.strutil;
+debug import std.stdio : writeln;
 
 // 文字列を SHIFT-JIS文字列に.
-jstring toMBS( T )( const(T)[] msg, int codePage = 0 )
-    if( is( T == char ) || is( T == wchar ) || is( T == dchar ) || is( T == jchar ) )
+jstring toMBS(U : T[], T)(U msg, int codePage = 0)
 {
-    static if( is( T == jchar ) ) return msg.j;
+    import std.conv : to;
+    import std.ascii : isASCII;
+    import std.exception : enforce;
+    import std.traits : Unqual, isSomeChar;
+    import core.sys.windows.windows : WideCharToMultiByte;
 
-    bool ASCIIOnly = true;
-    for( size_t i = 0 ; i < msg.length && ASCIIOnly ; i++ ) ASCIIOnly = msg[i].isASCII;
-    if( ASCIIOnly ) return msg.to!string.j;
+    static if      (is(Unqual!T == jchar)) return msg.j;
+    else static if (isSomeChar!T)
+    {
+        bool ASCIIOnly = true;
+        for (size_t i = 0 ; i < msg.length && ASCIIOnly ; ++i)
+            ASCIIOnly = msg[i].isASCII;
+        if (ASCIIOnly) return msg.to!string.j;
 
-    auto str16 = msg.to!wstring;
-    auto result = new char[ WideCharToMultiByte( codePage, 0, str16.ptr, str16.length, null, 0
-                                                 , null, null ) ];
+        auto str16 = msg.to!wstring;
+        auto result = new char[
+            WideCharToMultiByte(codePage, 0, str16.ptr, cast(int)str16.length,
+                                null, 0, null, null)];
 
-    enforce( 0 < result.length && result.length == WideCharToMultiByte( codePage, 0, str16.ptr
-                                                                        , str16.length, result.ptr, result.length, null, null ) );
-    return result.j;
+        enforce(0 < result.length &&
+                result.length == WideCharToMultiByte(
+                    codePage, 0, str16.ptr, cast(int)str16.length, result.ptr,
+                    cast(int)result.length, null, null));
+        return result.j;
+
+    }
+    else msg.to!string.toMBS;
+
 }
 
-// 文字列をSHIFT-JISのNull終端文字列に。
-const(byte)* toMBSz(T)( const(T)[] msg, int codePage = 0 )
-	if( is( T == char ) || is( T == wchar ) || is( T == dchar ) || is( T == jchar ) )
+/// ditto
+jstring toMBS(T)(T msg, int codePage = 0)
 {
-	static if( is( T == jchar ) ) return ( msg ~ [ 0 ] ).ptr.jz;
+    import std.conv : to;
+    return msg.to!string.toMBS(codePage);
+}
 
-	bool ASCIIOnly = true;
-	for( size_t i = 0 ; i < msg.length && ASCIIOnly ; i++ ) ASCIIOnly = msg[i].isASCII;
-	if( ASCIIOnly ) return msg.toUTF8z.jz;
 
-	auto str16 = msg.to!wstring;
-	auto result = new char[ WideCharToMultiByte( codePage, 0, str16.ptr, str16.length, null, 0
-	                                           , null, null ) + 1 ];
+// 文字列をSHIFT-JISのNull終端文字列に。
+jstringz toMBSz(U : T[], T)(U[] msg, int codePage = 0)
+{
+    import std.conv : to;
+    import std.utf : toUTFz;
+    alias toUTF8z = toUTFz!(immutable(char)*);
+    import std.ascii : isASCII;
+    import std.exception : enforce;
+    import std.traits : Unqual, isSomeChar;
+    import core.sys.windows.windows : WideCharToMultiByte;
 
-	enforce( 1 < result.length && result.length - 1 == WideCharToMultiByte( codePage, 0, str16.ptr
-	       , str16.length, result.ptr, result.length - 1, null, null ) );
-	return result.ptr.jz;
+    static if      (is(Unqual!T == jchar)) return (msg ~ '\0').jz;
+    else static if (isSomeChar!T)
+    {
+        bool ASCIIOnly = true;
+        for (size_t i = 0 ; i < msg.length && ASCIIOnly ; ++i)
+            ASCIIOnly = msg[i].isASCII;
+        if (ASCIIOnly) return msg.toUTF8z.jz;
+
+        auto str16 = msg.to!wstring;
+        auto result = new char[
+            WideCharToMultiByte(codePage, 0, str16.ptr, cast(int)str16.length,
+                                null, 0, null, null) + 1];
+
+        enforce(1 < result.length &&
+                result.length == WideCharToMultiByte(
+                    codePage, 0, str16.ptr, cast(int)str16.length, result.ptr,
+                    cast(int)result.length, null, null) + 1);
+        return result.ptr.jz;
+
+    }
+    else msg.to!string.toMBSz;
+}
+
+/// ditto
+jstring toMBSz(T)(T msg, int codePage = 0)
+{
+    import std.conv : to;
+    return msg.to!string.toMBSz(codePage);
 }
 
 // SHIFT-JIS文字列をUTF文字列に
-immutable(CHAR)[] fromMBS(CHAR)( const(jchar)[] msg, int codePage = 0 )
-	if( is( T == char ) || is( T == wchar ) || is( T == dchar ) || is( T == jchar ) )
+immutable(CHAR)[] fromMBS(CHAR)(const(jchar)[] msg, int codePage = 0)
+    if (is(T == char) || is(T == wchar) || is(T == dchar) || is(T == jchar))
 {
-	static if( is( CHAR == jchar ) ) return msg;
+    import std.conv : to;
+    import std.ascii : isASCII;
+    import core.sys.windows.windows : MultiByteToWideChar;
 
-	bool ASCIIOnly = true;
-	for( size_t i = 0 ; i < msg.length && ASCIIOnly ; i++ ) ASCIIOnly = msg[i].isASCII;
-	if( ASCIIOnly ) return msg.c.to!(immutable(CHAR)[]);
+    static if (is(CHAR == jchar)) return msg;
 
-	auto result = new wchar[ MultiByteToWideChar( codePage, 0, msg.ptr, msg.length, null, 0 ) ];
-	enforce( 0 < result.length && result.length == MultiByteToWideChar( codePage, 0, msg.ptr
-	       , msg.length, result.ptr, result.length ) );
-	return result.to!(immutable(CHAR)[]);
+    bool ASCIIOnly = true;
+    for (size_t i = 0 ; i < msg.length && ASCIIOnly ; ++i)
+        ASCIIOnly = msg[i].isASCII;
+    if (ASCIIOnly) return msg.c.to!(immutable(CHAR)[]);
+
+    auto result = new wchar[
+        MultiByteToWideChar(codePage, 0, msg.ptr, cast(int)msg.length,
+                            null, 0)];
+    enforce(0 < result.length &&
+            result.length ==MultiByteToWideChar(
+                codePage, 0, msg.ptr, msg.length, result.ptr, result.length));
+    return result.to!(immutable(CHAR)[]);
 }
 
 // Null終端SHIFT-JIS文字列をUTF文字列に。
-immutable(CHAR)[] fromMBSz(CHAR)( const(jchar)* msg, int codePage = 0 )
-	if( is( T == char ) || is( T == wchar ) || is( T == dchar ) || is( T == jchar ) )
+immutable(CHAR)[] fromMBSz(CHAR)(const(jchar)* msg, int codePage = 0)
+    if (is(T == char) || is(T == wchar) || is(T == dchar) || is(T == jchar))
 {
-	size_t i = 0;
-	static if( is( CHAR == jchar ) )
-	{
-		for( ; msg[i] != 0 ; i++ ){}
-		return msg[ 0 .. i ].j;
-	}
+    size_t i = 0;
+    static if (is(CHAR == jchar))
+    {
+        for (; msg[i] != 0 ; ++i){}
+        return msg[0 .. i].j;
+    }
 
-	bool ASCIIOnly = true;
-	for( ; msg[i] != 0 && ASCIIOnly ; i++ ) ASCIIOnly = msg[i].isASCII;
-	if( ASCIIOnly ) return msg[ 0 .. i ].c.to!(immutable(CHAR)[]);
+    bool ASCIIOnly = true;
+    for (; msg[i] != 0 && ASCIIOnly ; ++i) ASCIIOnly = msg[i].isASCII;
+    if (ASCIIOnly) return msg[0 .. i].c.to!(immutable(CHAR)[]);
 
-	auto result = new wchar[ MultiByteToWideChar( codePage, 0, msg, -1, null, 0 ) ];
-	enforce( 0 < result.length && result.length == MultiByteToWideChar( codePage, 0, msg.ptr
-	       , msg.length, result.ptr, result.length ) );
-	return result.to!(immutable(CHAR)[]);
+    auto result = new wchar[
+        MultiByteToWideChar(codePage, 0, msg, -1, null, 0)];
+    enforce(0 < result.length &&
+            result.length == MultiByteToWideChar(
+                codePage, 0, msg.ptr, cast(int)msg.length, result.ptr,
+                cast(int)result.length));
+    return result.to!(immutable(CHAR)[]);
 }
 
 
-debug( sjis ):
+debug(sjis):
 
 import std.stdio;
 void main()
 {
-	writeln( "日本語".toMBS.c );
+    writeln("日本語".toMBS.c);
 }

@@ -1,12 +1,13 @@
 /** verifying of D source codes.
  * Version:    0.31(dmd2.069.2)
- * Date:       2015-Dec-16 18:53:11
+ * Date:       2015-Dec-17 19:46:45.4567485
  * Authors:    KUMA
  * License:    CC0
  **/
 module sworks.vwrite.main;
 
 import sworks.base.output;
+debug import std.stdio : writeln;
 
 enum _VERSION_ = "0.31(dmd2.069.2)";
 enum _AUTHORS_ = "KUMA";
@@ -160,7 +161,7 @@ void main(string[] args)
         alias CRLF_MATCH = ctRegex!(r"\r\n", "gs");
         alias CR_MATCH = ctRegex!(r"\r", "gs");
         alias TAB_MATCH = ctRegex!(r"\t", "g");
-        alias TRAIL_SPACES_MATCH = ctRegex!(r"[ \t]+(?=\n)", "gs");
+        alias TRAIL_SPACES_MATCH = ctRegex!(r"[\t]+(?=\n)", "gs");
 
         alias PROJECT_MATCH = DocMatchRegex!PROJECT_TAG;
         alias PROJECT_MATCH2 = EnumMatchRegex!PROJECT_TAG;
@@ -174,8 +175,8 @@ void main(string[] args)
 
         alias IF_STYLE_MATCH =
             ctRegex!(r"\b(if|for|foreach|version|catch|with)\(", "g");
-        alias OPEN_BRACKET_STYLE_MATCH = ctRegex!(r"(\(\[)\s+", "g");
-        alias CLOSE_BRACKET_STYLE_MATCH = ctRegex!(r"\s+(\)\])", "g");
+        alias OPEN_BRACKET_STYLE_MATCH = ctRegex!(r"(\(|\[) +", "g");
+        alias CLOSE_BRACKET_STYLE_MATCH = ctRegex!(r" +(\)|\])", "g");
         alias COMMA_STYLE_MATCH = ctRegex!(r"\n(\s*),\s*", "gs");
 
         // 処理本体
@@ -184,8 +185,8 @@ void main(string[] args)
         import std.file : exists, getTimes, setTimes, read, write;
         import std.conv : to;
         import std.functional : binaryReverseArgs;
-        version (linux)
-            if (0 < args.length) args = args[1..$];
+
+        if (0 < args.length) args = args[1..$];
         foreach (one; args) // 全ての引数に対して。
         {
             auto ext = one.extension; // 拡張子でD言語のだけ選ぶ。

@@ -1,12 +1,12 @@
 /** コンソールへの出力を制御する。
  * Version:    0.31(dmd2.069.2)
- * Date:       2015-Dec-16 18:55:04
+ * Date:       2015-Dec-17 19:51:31.3297485
  * Authors:    KUMA
  * License:    CC0
  */
 module sworks.base.output;
 
-version (Windows) private import sworks.win32.sjis;
+version (Windows) public import sworks.win32.sjis;
 
 /// エラー出力
 void errorOutln(T ...)(lazy T msg) { Output.errorln(msg); }
@@ -141,6 +141,7 @@ private:
     {
         import std.conv : to;
         _outindent;
+
         if (_file !is stdout && _file !is stderr)
             foreach (one ; msg) _file.write(one.to!string);
         else

@@ -1,8 +1,8 @@
 /**
- * Version:    0.167(dmd2.069.2)
- * Date:       2015-Dec-14 16:57:55
+ * Version:    0.31(dmd2.069.2)
+ * Date:       2015-Dec-17 19:00:22.8567485
  * Authors:    KUMA
- * License:    cc0
+ * License:    CC0
  */
 module sworks.base.strutil;
 
@@ -35,6 +35,7 @@ T enstring(T)(T str, lazy string msg = "failure in enstring")
 ///
 wstring fromUTF16z(const(wchar)* str)
 {
+    import std.conv : to;
     size_t i;
     for (i = 0 ; str[i] != '\0' ; ++i){}
     return str[0 .. i].to!wstring;
