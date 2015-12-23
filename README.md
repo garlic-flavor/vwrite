@@ -16,6 +16,24 @@ WHITE SPACING RULE OF DMD
 * trailing spaces are not allowed.
 * Newline sequence other than `'\n'`(unix style) is not allowed.
 
+HOW TO BUILD
+------------
+### On Windows
+Please use the make tool that is distributed with dmd.
+
+32bit:
+
+    >make -f win.mak release
+
+64bit:
+
+    >make -f win.mak release FLAG=-m64
+
+### On linux
+
+    >make -f linux64.mak release
+
+
 HOW TO USE
 ----------
 
@@ -76,6 +94,7 @@ ACKNOWLEDGEMENTS
 
 DEVELOPMENT ENVIRONMENT
 -----------------------
+* Windows Vista(x64) x dmd 2.069.2 x make(of Digital Mars)
 * Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1
 
 
@@ -129,6 +148,25 @@ DMDルール
 * `'\t'`(タブ文字)を使わない。
 * 行末の空白文字はだめ。
 * 改行コードは`'\n'`のみ。
+
+
+ビルド方法
+----------
+### Windows
+DMDに付属のmakeを使ってください。
+
+32bit版
+
+    >make -f win.mak release FLAG=-version=InJapanese
+
+64bit版
+
+    >make -f win.mak release FLAG="-version=InJapanese -m64"
+
+
+### linux
+
+    >make -f linux64.mak release FLAG=-version=InJapanese
 
 
 使い方
@@ -191,6 +229,7 @@ DMDルール
 
 開発環境
 --------
+* Windows Vista(x64) x dmd 2.069.2 x (Digital Marsの)make
 * Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1
 
 

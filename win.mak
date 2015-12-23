@@ -4,13 +4,13 @@ AUTHORS = KUMA
 LICENSE = CC0
 VERSION = 0.31(dmd2.069.2)
 
-MAKEFILE = win64.jp.mak
+MAKEFILE = win.mak
 DC = dmd
 MAKE = make
 TO_COMPILE = src\sworks\base\output.d src\sworks\vwrite\main.d src\sworks\base\strutil.d src\sworks\win32\sjis.d
 TO_LINK = src\sworks\base\output.obj src\sworks\vwrite\main.obj src\sworks\base\strutil.obj src\sworks\win32\sjis.obj
-COMPILE_FLAG = -m64 -version=InJapanese -Isrc
-LINK_FLAG = -m64
+COMPILE_FLAG = -Isrc
+LINK_FLAG =
 EXT_LIB =
 DDOC_FILE =
 FLAG =
@@ -25,8 +25,8 @@ $(TARGET) : $(TO_LINK) $(EXT_LIB)
 
 ## DEPENDENCE
 $(TO_LINK) : $(MAKEFILE) $(EXT_LIB)
-src\sworks\base\output.obj : src\sworks\base\output.d src\sworks\win32\sjis.d
-src\sworks\vwrite\main.obj : src\sworks\base\output.d src\sworks\vwrite\main.d
+src\sworks\base\output.obj : src\sworks\base\output.d src\sworks\base\strutil.d src\sworks\win32\sjis.d
+src\sworks\vwrite\main.obj : src\sworks\base\output.d src\sworks\vwrite\main.d src\sworks\base\strutil.d src\sworks\win32\sjis.d
 src\sworks\base\strutil.obj : src\sworks\base\strutil.d
 src\sworks\win32\sjis.obj : src\sworks\base\strutil.d src\sworks\win32\sjis.d
 
@@ -52,7 +52,7 @@ run :
 edit :
 	emacs $(TO_COMPILE)
 remake :
-	amm -m64 vwrite.exe -version=InJapanese win64.jp.mak .\src\sworks\vwrite\main.d "v=0.31(dmd2.069.2)" authors=KUMA license=CC0 $(FLAG)
+	amm vwrite.exe win.mak .\src\sworks\vwrite\main.d "v=0.31(dmd2.069.2)" authors=KUMA license=CC0 $(FLAG)
 
 debug :
 	ddbg $(TARGET)
