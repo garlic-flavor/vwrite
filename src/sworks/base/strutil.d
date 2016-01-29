@@ -1,6 +1,6 @@
 /**
- * Version:    0.31(dmd2.069.2)
- * Date:       2015-Dec-17 19:00:22.8567485
+ * Version:    0.32(dmd2.070.0)
+ * Date:       2015-Dec-23 19:31:50
  * Authors:    KUMA
  * License:    CC0
  */

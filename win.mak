@@ -2,22 +2,21 @@
 TARGET = vwrite.exe
 AUTHORS = KUMA
 LICENSE = CC0
-VERSION = 0.31(dmd2.069.2)
+VERSION = 0.32
 
 MAKEFILE = win.mak
 DC = dmd
 MAKE = make
-TO_COMPILE = src\sworks\base\output.d src\sworks\vwrite\main.d src\sworks\base\strutil.d src\sworks\win32\sjis.d
-TO_LINK = src\sworks\base\output.obj src\sworks\vwrite\main.obj src\sworks\base\strutil.obj src\sworks\win32\sjis.obj
+TO_COMPILE = src\sworks\vwrite\main.d src\sworks\base\output.d src\sworks\base\strutil.d src\sworks\win32\sjis.d
+TO_LINK = src\sworks\vwrite\main.obj src\sworks\base\output.obj src\sworks\base\strutil.obj src\sworks\win32\sjis.obj
 COMPILE_FLAG = -Isrc
 LINK_FLAG =
 EXT_LIB =
-DDOC_FILE =
 FLAG =
 
 ## LINK COMMAND
 $(TARGET) : $(TO_LINK) $(EXT_LIB)
-	$(DC) -g $(LINK_FLAG) $(FLAG) $(EXT_LIB) -of$@ $**
+	$(DC) -g $(LINK_FLAG) $(FLAG) -of$@ $**
 
 ## COMPILE RULE
 .d.obj :
@@ -25,16 +24,16 @@ $(TARGET) : $(TO_LINK) $(EXT_LIB)
 
 ## DEPENDENCE
 $(TO_LINK) : $(MAKEFILE) $(EXT_LIB)
-src\sworks\base\output.obj : src\sworks\base\output.d src\sworks\base\strutil.d src\sworks\win32\sjis.d
 src\sworks\vwrite\main.obj : src\sworks\base\output.d src\sworks\vwrite\main.d src\sworks\base\strutil.d src\sworks\win32\sjis.d
+src\sworks\base\output.obj : src\sworks\base\output.d src\sworks\base\strutil.d src\sworks\win32\sjis.d
 src\sworks\base\strutil.obj : src\sworks\base\strutil.d
 src\sworks\win32\sjis.obj : src\sworks\base\strutil.d src\sworks\win32\sjis.d
 
 ## PHONY TARGET
 debug-all :
-	$(DC) -g -debug -of$(TARGET) $(COMPILE_FLAG) $(LINK_FLAG) $(TO_COMPILE) $(EXT_LIB)  $(FLAG)
+	$(DC) -g -debug -of$(TARGET) $(COMPILE_FLAG) $(LINK_FLAG) $(TO_COMPILE) $(EXT_LIB) $(FLAG)
 release :
-	$(DC) -release -O -inline -of$(TARGET) $(COMPILE_FLAG) $(LINK_FLAG) $(TO_COMPILE) $(EXT_LIB)  $(FLAG)
+	$(DC) -release -O -inline -of$(TARGET) $(COMPILE_FLAG) $(LINK_FLAG) $(TO_COMPILE) $(EXT_LIB) $(FLAG)
 clean :
 	del $(TARGET) $(TO_LINK)
 clean_obj :
@@ -42,17 +41,19 @@ clean_obj :
 vwrite :
 	vwrite --setversion "$(VERSION)" --project "$(TARGET)" --authors "$(AUTHORS)" --license "$(LICENSE)" $(TO_COMPILE)
 ddoc :
-	$(DC) -c -o- -op -D -Dd $(COMPILE_FLAG) $(DDOC_FILE) $(TO_COMPILE) $(FLAG)
+	$(DC) -c -o- -op -D $(COMPILE_FLAG) $(DDOC_FILE) $(TO_COMPILE) $(FLAG)
+	@type $(DOC_HEADER) $(DOC_FILES) $(DOC_FOOTER) > $(DOC_TARGET) 2>nul
+      	@del $(DOC_FILES)
 show :
 	@echo ROOT = src\sworks\vwrite\main.d
 	@echo TARGET = $(TARGET)
-	@echo VERSION = 0.31(dmd2.069.2)
+	@echo VERSION = 0.32
 run :
 	$(TARGET) $(FLAG)
 edit :
 	emacs $(TO_COMPILE)
 remake :
-	amm vwrite.exe win.mak .\src\sworks\vwrite\main.d "v=0.31(dmd2.069.2)" authors=KUMA license=CC0 $(FLAG)
+	amm vwrite.exe win.mak .\src\sworks\vwrite\main.d v=0.32 authors=KUMA license=CC0 $(FLAG)
 
 debug :
 	ddbg $(TARGET)

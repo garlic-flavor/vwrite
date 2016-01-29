@@ -1,6 +1,6 @@
 /** verifying of D source codes.
- * Version:    0.31(dmd2.069.2)
- * Date:       2015-Dec-17 19:46:45.4567485
+ * Version:    0.32(dmd2.070.0)
+ * Date:       2016-Jan-29 20:05:30
  * Authors:    KUMA
  * License:    CC0
  **/
@@ -9,7 +9,7 @@ module sworks.vwrite.main;
 import sworks.base.output;
 debug import std.stdio : writeln;
 
-enum _VERSION_ = "0.31(dmd2.069.2)";
+enum _VERSION_ = "0.32(dmd2.070.0)";
 enum _AUTHORS_ = "KUMA";
 
 enum header = "Version Writer ver " ~ _VERSION_ ~ ". written by " ~
@@ -108,6 +108,26 @@ auto enumString(string name, string val)
     return ["enum _", name.toUpper, "_ = \"", val, "\";"].join;
 }
 
+// Shellからdmdを起動して dmd のヴァージョンを調べて追加する。
+void appendDmdVersion(ref string v)
+{
+    import std.regex : ctRegex, match;
+    import std.process : executeShell;
+    import std.array : join;
+
+    auto result = "dmd --version".executeShell;
+    if (0 != result.status) return;
+
+    auto m = result.output.match(ctRegex!(r"v([\d\.]+)"));
+    if (m.empty) return;
+
+    auto cap = m.front;
+    if (cap.length < 1) return;
+
+    v = [v, "(dmd", cap[1], ")"].join;
+}
+
+
 //
 void main(string[] args)
 {
@@ -156,6 +176,9 @@ void main(string[] args)
                "l|license", &licenseName,
                "a|authors", &authorsName);
 
+        // dmd のヴァージョンの追加 X.XX -> X.XX(dmdY.YYY.Y)
+        versionName.appendDmdVersion;
+
         // 正規表現の準備
         import std.regex : ctRegex, replaceAll;
         alias CRLF_MATCH = ctRegex!(r"\r\n", "gs");
@@ -177,11 +200,11 @@ void main(string[] args)
             ctRegex!(r"\b(if|for|foreach|version|catch|with)\(", "g");
         alias OPEN_BRACKET_STYLE_MATCH = ctRegex!(r"(\(|\[) +", "g");
         alias CLOSE_BRACKET_STYLE_MATCH = ctRegex!(r" +(\)|\])", "g");
-        alias COMMA_STYLE_MATCH = ctRegex!(r"\n(\s*),\s*", "gs");
+        // alias COMMA_STYLE_MATCH = ctRegex!(r"\n(\s*),\s*", "gs");
 
         // 処理本体
         import std.path : extension;
-        import std.datetime : SysTime, Clock;
+        import std.datetime : SysTime, Clock, DateTime;
         import std.file : exists, getTimes, setTimes, read, write;
         import std.conv : to;
         import std.functional : binaryReverseArgs;
@@ -216,6 +239,9 @@ void main(string[] args)
 
             SysTime aTime, mTime;
             one.getTimes(aTime, mTime);
+            auto modifTime =
+                DateTime(mTime.year, mTime.month, mTime.day,
+                         mTime.hour, mTime.minute, mTime.second).toString;
             version (InJapanese)
             {
                 logln("最終読み取り時刻 : ", aTime);
@@ -242,7 +268,7 @@ void main(string[] args)
                             VERSION_TAG.docString(versionName))
                 .replaceAll(VERSION_MATCH2,
                             VERSION_TAG.enumString(versionName))
-                .replaceAll(DATE_MATCH, DATE_TAG.docString(mTime.toString))
+                .replaceAll(DATE_MATCH, DATE_TAG.docString(modifTime))
                 .replaceAll(AUTHORS_MATCH,
                             AUTHORS_TAG.docString(authorsName))
                 .replaceAll(AUTHORS_MATCH2,
@@ -255,7 +281,7 @@ void main(string[] args)
                 .replaceAll(IF_STYLE_MATCH, "$1 (")
                 .replaceAll(OPEN_BRACKET_STYLE_MATCH, "$1")
                 .replaceAll(CLOSE_BRACKET_STYLE_MATCH, "$1")
-                .replaceAll(COMMA_STYLE_MATCH, ",\n$1 ")
+                // .replaceAll(COMMA_STYLE_MATCH, ",\n$1 ")
 
                 .binaryReverseArgs!write(one);
 

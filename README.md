@@ -70,8 +70,8 @@ this program will
    4. remove tailing spaces.
    5. replace `'Project:'` with `'Project: MYPROJECT'`.
    6. replace `'enum _PROJECT_ ="";'` with `'enum _PROJECT_="MYPROJECT"`.
-   7. replace `'Version:'` with `'Version: XXX.x'`.
-   8. replace `'enum _VERSION_ = "";'` with `'enum _VERSION_="XXX.x"`.
+   7. replace `'Version:'` with `'Version: XXX.x(dmdY.YYY.Y)'`.
+   8. replace `'enum _VERSION_ = "";'` with `'enum _VERSION_="XXX.x(dmdY.YYY.Y)"`.
    9. replace `'Date:\'` with `'Date: YYYY-MON-DD HH:MM:SS'`.
    10. replace `'Authors:'` with `'Authors: YOU'`.
    11. replace `'enum _AUTHORS_ = "";'` with `'enum _AUTHORS_ = "YOU";'`.
@@ -94,7 +94,7 @@ ACKNOWLEDGEMENTS
 
 DEVELOPMENT ENVIRONMENT
 -----------------------
-* Windows Vista(x64) x dmd 2.069.2 x make(of Digital Mars)
+* Windows Vista(x64) x dmd 2.070.0 x make(of Digital Mars)
 * Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1
 
 
@@ -105,6 +105,11 @@ LICENSE
 
 HISTORY
 -------
+- 2016-01-29 ver. 0.32(dmd2.070.0)
+
+  The version information of dmd is added to the user specified string automatically.
+
+
 - 2015-12-16 ver. 0.31(dmd2.069.2)
 
   add replacing rule for `'if ('`, `'for ('`, `'foreach ('`, `'version ('`,
@@ -206,7 +211,7 @@ DMDに付属のmakeを使ってください。
    5. `'Project:'` を `'Project: MYPROJECT'`に
    6. `'enum _PROJECT_ ="";'` を `'enum _PROJECT_="MYPROJECT"`に
    7. `'Version:'` を `'Version: XXX.x'`に
-   8. `'enum _VERSION_ = "";'` を `'enum _VERSION_="XXX.x"`に
+   8. `'enum _VERSION_ = "";'` を `'enum _VERSION_="XXX.x(dmdY.YYY.Y)"`に
    9. `'Date:\'` を `'Date: YYYY-MON-DD HH:MM:SS'`に
    10. `'Authors:'` を `'Authors: YOU'`に
    11. `'enum _AUTHORS_ = "";'` を `'enum _AUTHORS_ = "YOU";'`に
@@ -229,7 +234,7 @@ DMDに付属のmakeを使ってください。
 
 開発環境
 --------
-* Windows Vista(x64) x dmd 2.069.2 x (Digital Marsの)make
+* Windows Vista(x64) x dmd 2.070.0 x (Digital Marsの)make
 * Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1
 
 
@@ -240,6 +245,11 @@ DMDに付属のmakeを使ってください。
 
 履歴
 ----
+- 2016-01-29 ver. 0.32(dmd2.070.0)
+
+  dmdのヴァージョン情報は自動的に付加されるようになりました。
+
+
 - 2015-12-16 ver. 0.31(dmd2.069.2)
 
   `'if ('`, `'for ('`, `'foreach ('`, `'version ('`, `'catch ('`
