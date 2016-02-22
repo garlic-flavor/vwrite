@@ -239,7 +239,7 @@ $(LINK2 http://creativecommons.org/publicdomain/zero/1.0/, Creative Commons Zero
 $(UL
 $(LI 2016-02-22 ver. 0.33(dmd2.070.0)
   README.md と コマンドラインヘルプメッセージはddocで生成するようになりました。
-  Dmd: の見出しに対してdmdのヴァージョン情報を出力します。)
+  'Dmd:' の見出しに対してdmdのヴァージョン情報を出力します。)
 
 $(LI 2016-01-29 ver. 0.32(dmd2.070.0)
   dmdのヴァージョン情報は自動的に付加されるようになりました。)
