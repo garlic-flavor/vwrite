@@ -1,5 +1,5 @@
 /** SHIFT-JIS の扱いに。
- * Version:    0.32(dmd2.070.0)
+ * Version:    0.33(dmd2.070.0)
  * Date:       2015-Dec-23 19:31:50
  * Authors:    KUMA
  * License:    CC0
