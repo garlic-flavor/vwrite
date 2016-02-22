@@ -1,0 +1,63 @@
+BR =
+$0
+DDOC = $(BODY)
+B = __$0__
+I = _$0_
+U = $0
+P = $0$(BR)
+DL = $0
+DT = ### $0
+DD = $0
+TABLE = $0
+TR = $0
+TH = $0
+TD = $0
+OL = $0
+UL = $0
+LI = - $0
+BIG = __$0__
+SMALL = $0
+LINK = [$0]($0)
+LINK2 = [$+($1)]($1)
+RED = $0
+BLUE = $0
+GREEN = $0
+YELLOW = $0
+BLACK = $0
+WHITE = $0
+D_CODE = ```d
+$0
+```
+D_INLINECODE = `$0`
+
+DDOC_DECL =
+DDOC_DECL_DD =
+DDOC_DITTO = $(BR)$0
+DDOC_SECTIONS = $0
+DDOC_SUMMARY = # $0$(BR)
+DDOC_AUTHORS = $(B Authors:) $0
+DDOC_BUGS = ## BUGS:$(BR)$0
+DDOC_COPYRIGHT = $(B Copyright:) $0
+DDOC_DATE = $(B Date:) $0
+DDOC_DEPRECATED = ## Deprecated:$(BR)$0
+DDOC_EXAMPLES = ## Examples:$(BR)$0
+DDOC_HISTORY = ## History:$(BR)$0
+DDOC_LICENSE = $(B License:) $0
+DDOC_RETURNS =
+DDOC_SEE_ALSO = ### See Also:$(BR)$0
+DDOC_STANDARDS = ### Standards:$(BR)$0
+DDOC_THROWS =
+DDOC_VERSION = $(B Version:) $0
+DDOC_SECTION_H = ## $0
+DDOC_SECTION = $0
+DDOC_PARAMS =
+DDOC_ANCHOR =
+ESCAPES = />/>/
+          /</</
+          /&/&/
+          /nbsp/ /
+
+SEP = |
+COL = -
+PROMPT = nbspnbsp>$0
+OLI = 
