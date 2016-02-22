@@ -45,7 +45,7 @@ Please use the make tool that is distributed with dmd.
 
 ** Options
 option              | description
-
+--------------------|--------------------
 -h --help -? /?     | show help messages and exit.
 --version           | show the version of vwrite.
                     |
@@ -189,7 +189,7 @@ DMDに付属のmakeを使ってください。
 
 ** オプション
 引数                |説明
-
+--------------------|------------
 -h --help -? /?     |ヘルプメッセージを出力します。
                     |
 --authors 名無し    |プロジェクトの著者を'名無し'とします。
