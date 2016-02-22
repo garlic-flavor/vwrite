@@ -45,7 +45,7 @@ Please use the make tool that is distributed with dmd.
 
 ** Options
 option              | description
-                    |
+
 -h --help -? /?     | show help messages and exit.
 --version           | show the version of vwrite.
                     |
@@ -117,6 +117,12 @@ Creative Commons Zero License(http://creativecommons.org/publicdomain/zero/1.0/)
 
 `,
 "History": `
+o 2016-02-22 ver. 0.33(dmd2.070.0)
+  README.md and the commandline help message are generated automatically
+  by ddoc.
+  add 'Dmd:', ddoc section.
+
+
 o 2016-01-29 ver. 0.32(dmd2.070.0)
   The version information of dmd is added to the user specified string
   automatically.
@@ -183,7 +189,7 @@ DMDに付属のmakeを使ってください。
 
 ** オプション
 引数                |説明
-                    |
+
 -h --help -? /?     |ヘルプメッセージを出力します。
                     |
 --authors 名無し    |プロジェクトの著者を'名無し'とします。
@@ -252,6 +258,11 @@ Creative Commons Zero License(http://creativecommons.org/publicdomain/zero/1.0/)
 
 `,
 "履歴:":`
+o 2016-02-22 ver. 0.33(dmd2.070.0)
+  README.md と コマンドラインヘルプメッセージはddocで生成するようになりました。
+  'Dmd:' の見出しに対してdmdのヴァージョン情報を出力します。
+
+
 o 2016-01-29 ver. 0.32(dmd2.070.0)
   dmdのヴァージョン情報は自動的に付加されるようになりました。
 
