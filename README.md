@@ -3,7 +3,7 @@
 
 __Version:__ 0.33(dmd2.070.0)
 
-__Date:__ 2016-Feb-21 20:41:29
+__Date:__ 2016-Feb-23 00:53:33
 
 __Authors:__ KUMA
 
@@ -50,7 +50,7 @@ Please use the make tool that is distributed with dmd.
 
 ### Options
 option              | description
----------------------|--------------------
+--------------------|--------------------
 -h --help -? /?     | show help messages and exit.
 --version           | show the version of vwrite.
                     |
@@ -113,7 +113,7 @@ this program will do,
 
 ## Development Environment:
 - Windows Vista(x64) x dmd 2.070.0 x make(of Digital Mars)
-- Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1
+- Ubuntu 15.10(amd64) x dmd 2.070.0 x gcc 5.2.1
 
 
 
@@ -256,8 +256,8 @@ DMDに付属のmakeを使ってください。
 
 
 ## 開発環境:
-- Windows Vista(x64) x dmd 2.070.0 x (Digital Marsの)make
-- Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1
+- Windows Vista(x64) x dmd2.070.0 x (Digital Marsの)make
+- Ubuntu 15.10(amd64) x dmd2.070.0 x gcc 5.2.1
 
 
 

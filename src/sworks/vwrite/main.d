@@ -1,8 +1,11 @@
 /** VWRITE - Version WRITEr -
 Version:    0.33(dmd2.070.0)
-Date:       2016-Feb-21 20:41:29
+Date:       2016-Feb-23 00:53:33
 Authors:    KUMA
 License:    CC0
+
+Macros:
+    DMD_VERSION = 2.070.0
 
 Description:
 This program appends some informations to your D source codes.
@@ -99,8 +102,8 @@ $(LI vwrite is written by D Programming Language.
 
 Development_Environment:
 $(UL
-$(LI Windows Vista(x64) x dmd 2.070.0 x make(of Digital Mars))
-$(LI Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1)
+$(LI Windows Vista(x64) x dmd $(DMD_VERSION) x make(of Digital Mars))
+$(LI Ubuntu 15.10(amd64) x dmd $(DMD_VERSION) x gcc 5.2.1)
 )
 
 License_description:
@@ -228,8 +231,8 @@ $(LI vwrite は D言語で書かれています。
 
 開発環境:
 $(UL
-$(LI Windows Vista(x64) x dmd 2.070.0 x (Digital Marsの)make)
-$(LI Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1)
+$(LI Windows Vista(x64) x dmd$(DMD_VERSION) x (Digital Marsの)make)
+$(LI Ubuntu 15.10(amd64) x dmd$(DMD_VERSION) x gcc 5.2.1)
 )
 
 ライセンス:
@@ -286,8 +289,12 @@ $(LI 2009  9/ 1  ver. 0.1
 **/
 module sworks.vwrite.main;
 
+version (D_Ddoc){}
+else:
+
 import sworks.base.output;
 debug import std.stdio : writeln;
+
 
 enum _VERSION_ = "0.33(dmd2.070.0)";
 enum _AUTHORS_ = "KUMA";
@@ -295,34 +302,33 @@ enum _AUTHORS_ = "KUMA";
 enum header = "Version Writer ver " ~ _VERSION_ ~ ". written by " ~
               _AUTHORS_ ~ ".";
 
-version (D_Ddoc){ enum help = ""; }
+
+enum string[string] helpdoc = mixin(import("help.d"));
+
+version (InJapanese)
+{
+    enum help = header ~
+        "\nD言語のソースコードにヴァージョン情報を付加します。\n"
+        "空白文字に関する慣習をDMD準拠のものにします。\n" ~
+        helpdoc["使い方:"] ~
+        helpdoc["DMDルール:"];
+}
 else
 {
-    enum string[string] helpdoc = mixin(import("help.d"));
-
-    version (InJapanese)
-    {
-        enum help = header ~
-            "\nD言語のソースコードにヴァージョン情報を付加します。\n"
-            "空白文字に関する慣習をDMD準拠のものにします。\n" ~
-            helpdoc["使い方:"] ~
-            helpdoc["DMDルール:"];
-    }
-    else
-    {
-        enum help = header ~
-            "\nSet version strings to your project.\n"
-            "And verify white space styles as of DMD style.\n" ~
-            helpdoc["How to use:"] ~
-            helpdoc["White spacing rule of DMD:"];
-    }
+    enum help = header ~
+        "\nSet version strings to your project.\n"
+        "And verify white space styles as of DMD style.\n" ~
+        helpdoc["How to use:"] ~
+        helpdoc["White spacing rule of DMD:"];
 }
+
 enum RIGHT_NEWLINE = "\n";
 enum RIGHT_INDENTATION = "    ";
 
 enum PROJECT_TAG = "project";
 enum VERSION_TAG = "version";
 enum DMD_TAG = "dmd";
+enum DMD_VERSION_TAG = "DMD_VERSION";
 enum DATE_TAG = "date";
 enum AUTHORS_TAG = "authors";
 enum LICENSE_TAG = "license";
@@ -333,8 +339,17 @@ template DocMatchRegex(string TAG)
     import std.regex : ctRegex;
     import std.string : capitalize;
     enum DocMatchRegex = ctRegex!(r"(?<=^[\s\*\+]*)" ~ TAG.capitalize ~
-                                  ":[^\n]*$", "gim");
+                                  r"\s*:[^\n]*$", "gim");
 }
+
+template DocMacroMatchRegex(string TAG)
+{
+    import std.regex : ctRegex;
+    import std.string : capitalize;
+    enum DocMacroMatchRegex = ctRegex!(r"(?<=^[\s\*\+]*)" ~ TAG.capitalize ~
+                                       r"\s*=[^\n]*$", "gim");
+}
+
 
 template EnumMatchRegex(string NAME)
 {
@@ -352,6 +367,12 @@ auto docString(string tag, string name)
     auto buf = "".appender;
     buf.formattedWrite(DOC_FORMAT, tag.capitalize ~ ":", name);
     return buf.data;
+}
+
+auto docMacroString(string tag, string name)
+{
+    import std.array : join;
+    return [tag, " = ", name, ].join;
 }
 
 auto enumString(string name, string val)
@@ -445,6 +466,7 @@ void main(string[] args)
         alias VERSION_MATCH2 = EnumMatchRegex!VERSION_TAG;
         alias DMD_MATCH = DocMatchRegex!DMD_TAG;
         alias DMD_MATCH2 = EnumMatchRegex!DMD_TAG;
+        alias DMD_MATCH3 = DocMacroMatchRegex!DMD_VERSION_TAG;
         alias DATE_MATCH = DocMatchRegex!DATE_TAG;
         alias AUTHORS_MATCH = DocMatchRegex!AUTHORS_TAG;
         alias AUTHORS_MATCH2 = EnumMatchRegex!AUTHORS_TAG;
@@ -456,6 +478,7 @@ void main(string[] args)
         // alias OPEN_BRACKET_STYLE_MATCH = ctRegex!(r"(\(|\[) +", "g");
         // alias CLOSE_BRACKET_STYLE_MATCH = ctRegex!(r" +(\)|\])", "g");
         // alias COMMA_STYLE_MATCH = ctRegex!(r"\n(\s*),\s*", "gs");
+
 
         // 処理本体
         import std.path : extension;
@@ -527,6 +550,8 @@ void main(string[] args)
                             DMD_TAG.docString(dmdVersion))
                 .replaceAll(DMD_MATCH2,
                             DMD_TAG.enumString(dmdVersion))
+                .replaceAll(DMD_MATCH3,
+                            DMD_VERSION_TAG.docMacroString(dmdVersion))
                 .replaceAll(DATE_MATCH, DATE_TAG.docString(modifTime))
                 .replaceAll(AUTHORS_MATCH,
                             AUTHORS_TAG.docString(authorsName))
