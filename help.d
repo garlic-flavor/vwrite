@@ -1,8 +1,8 @@
 ["summary": `VWRITE - Version WRITEr -
 `,
-"Version": `0.33(dmd2.070.0)
+"Version": `0.34(dmd2.070.0)
 `,
-"Date": "2016-Feb-21 20:41:29
+"Date": "2016-Feb-28 20:02:32
 ",
 "Authors": `KUMA
 `,
@@ -48,10 +48,6 @@ option              | description
 --------------------|--------------------
 -h --help -? /?     | show help messages and exit.
 --version           | show the version of vwrite.
-                    |
---authors YOU       | set the project's author as YOU.
---license LICENSE   |  put your project to under LICENSE.
---project MYPROJECT | set your project's name as MYPROJECT
 --setversion XXX.x  | set your project's version string as XXX.x.
 
 `,
@@ -60,10 +56,7 @@ this program will do,
 
 
 * read informations about your project from command line arguments.
-    * '--project MYPROJECT' gives the name of the project.
     * '--setversion XXX.x' gives the description of the version.
-    * '--authors YOU' gives names of authors.
-    * '--license LICENSE' gives an information about the license.
 
 
 
@@ -76,17 +69,10 @@ this program will do,
     * replace '\r' with '\n'.
     * replace '\t' with '    '(four sequential spaces).
     * remove tailing spaces.
-    * replace 'Project:' with 'Project: MYPROJECT'.
-    * replace 'enum _PROJECT_ ="";' with 'enum _PROJECT_="MYPROJECT".
     * replace 'Version:' with 'Version: XXX.x(dmdY.YYY.Y)'.
     * replace 'enum _VERSION_ = "";' with
           'enum _VERSION_="XXX.x(dmdY.YYY.Y)".
     * replace 'Date:' with 'Date: YYYY-MON-DD HH:MM:SS'.
-    * replace 'Authors:' with 'Authors: YOU'.
-    * replace 'enum _AUTHORS_ = "";' with 'enum _AUTHORS_ = "YOU";'.
-    * replace 'License:' with 'License: LICENSE'.
-    * replace 'enum _LICENSE_ = "";' with
-          'enum _LICENSE_ = "LICENSE";'.
     * replace 'if' with 'if '.
     * replace 'for' with 'for '.
     * replace 'foreach' with 'foreach '.
@@ -108,7 +94,7 @@ o vwrite is written by D Programming Language.
 `,
 "Development Environment:":`
 o Windows Vista(x64) x dmd 2.070.0 x make(of Digital Mars)
-o Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1
+o Ubuntu 15.10(amd64) x dmd 2.070.0 x gcc 5.2.1
 
 
 `,
@@ -117,6 +103,10 @@ Creative Commons Zero License(http://creativecommons.org/publicdomain/zero/1.0/)
 
 `,
 "History": `
+o 2016-02-28 ver. 0.034(dmd2.070.0)
+  --authors, --project and --license are removed.
+
+
 o 2016-02-22 ver. 0.33(dmd2.070.0)
   README.md and the commandline help message are generated automatically
   by ddoc.
@@ -189,14 +179,12 @@ DMDに付属のmakeを使ってください。
 
 ** オプション
 引数                |説明
---------------------|------------
+--------------------|--------------------
 -h --help -? /?     |ヘルプメッセージを出力します。
-                    |
---authors 名無し    |プロジェクトの著者を'名無し'とします。
---license NYSL      |プロジェクトのライセンスを'NYSL'とします。
---project MYPROJECT |プロジェクト名を'MYPROJECT'とします。
---setversion XXX.x  |ヴァージョン文字列を指定します。
 --version           |vwrite のヴァージョン情報を表示します。
+--setversion XXX.x  |ヴァージョン文字列を指定します。
+
+
 
 `,
 "このプログラムは何をしますか:":`
@@ -204,10 +192,7 @@ DMDに付属のmakeを使ってください。
 
 
 * コマンドライン引数より、プロジェクトに関する以下の情報を得ます。
-    * --project MYPROJECT プロジェクトの名前を指定します。
     * --setversion XXX.x ヴァージョン情報を指定します。
-    * --authors YOU 著者名を指定します。
-    * --license LICENSE ライセンス情報を指定します。
 
 
 
@@ -219,15 +204,9 @@ DMDに付属のmakeを使ってください。
     * '\r' を '\n'に
     * '\t' を '    '(スペース4個)に
     * 行末の空白文字の消去
-    * 'Project:' を 'Project: MYPROJECT'に
-    * 'enum _PROJECT_ ="";' を 'enum _PROJECT_="MYPROJECT"に
     * 'Version:' を 'Version: XXX.x'に
     * 'enum _VERSION_ = "";' を 'enum _VERSION_="XXX.x(dmdY.YYY.Y)"に
     * 'Date:\' を 'Date: YYYY-MON-DD HH:MM:SS'に
-    * 'Authors:' を 'Authors: YOU'に
-    * 'enum _AUTHORS_ = "";' を 'enum _AUTHORS_ = "YOU";'に
-    * 'License:' を 'License: LICENSE'に
-    * 'enum _LICENSE_ = "";' を 'enum _LICENSE_ = "LICENSE";'に
     * 'if' を 'if 'に
     * 'for' を 'for 'に
     * 'foreach' を 'foreach 'に
@@ -248,8 +227,8 @@ o vwrite は D言語で書かれています。
 
 `,
 "開発環境:":`
-o Windows Vista(x64) x dmd 2.070.0 x (Digital Marsの)make
-o Ubuntu 15.10(amd64) x dmd 2.069.2 x gcc 5.2.1
+o Windows Vista(x64) x dmd2.070.0 x (Digital Marsの)make
+o Ubuntu 15.10(amd64) x dmd2.070.0 x gcc 5.2.1
 
 
 `,
@@ -258,6 +237,10 @@ Creative Commons Zero License(http://creativecommons.org/publicdomain/zero/1.0/)
 
 `,
 "履歴:":`
+o 2016-02-28 ver. 0.34(dmd2.070.0)
+  --authors, --license, --project がなくなりました。
+
+
 o 2016-02-22 ver. 0.33(dmd2.070.0)
   README.md と コマンドラインヘルプメッセージはddocで生成するようになりました。
   'Dmd:' の見出しに対してdmdのヴァージョン情報を出力します。

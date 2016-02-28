@@ -1,9 +1,9 @@
 # VWRITE - Version WRITEr -
 
 
-__Version:__ 0.33(dmd2.070.0)
+__Version:__ 0.34(dmd2.070.0)
 
-__Date:__ 2016-Feb-23 00:53:33
+__Date:__ 2016-Feb-28 20:02:32
 
 __Authors:__ KUMA
 
@@ -53,10 +53,6 @@ option              | description
 --------------------|--------------------
 -h --help -? /?     | show help messages and exit.
 --version           | show the version of vwrite.
-                    |
---authors YOU       | set the project's author as YOU.
---license LICENSE   |  put your project to under LICENSE.
---project MYPROJECT | set your project's name as MYPROJECT
 --setversion XXX.x  | set your project's version string as XXX.x.
 
 
@@ -65,10 +61,7 @@ this program will do,
 
 
 1. read informations about your project from command line arguments.
-    1. `'--project MYPROJECT'` gives the name of the project.
     1. `'--setversion XXX.x'` gives the description of the version.
-    1. `'--authors YOU'` gives names of authors.
-    1. `'--license LICENSE'` gives an information about the license.
 
 
 
@@ -81,17 +74,10 @@ this program will do,
     1. replace `'\r'` with `'\n'`.
     1. replace `'\t'` with `'    '`(four sequential spaces).
     1. remove tailing spaces.
-    1. replace `'Project:'` with `'Project: MYPROJECT'`.
-    1. replace `'enum _PROJECT_ ="";'` with `'enum _PROJECT_="MYPROJECT"`.
     1. replace `'Version:'` with `'Version: XXX.x(dmdY.YYY.Y)'`.
     1. replace `'enum _VERSION_ = "";'` with
           `'enum _VERSION_="XXX.x(dmdY.YYY.Y)"`.
     1. replace `'Date:'` with `'Date: YYYY-MON-DD HH:MM:SS'`.
-    1. replace `'Authors:'` with `'Authors: YOU'`.
-    1. replace `'enum _AUTHORS_ = "";'` with `'enum _AUTHORS_ = "YOU";'`.
-    1. replace `'License:'` with `'License: LICENSE'`.
-    1. replace `'enum _LICENSE_ = "";'` with
-          `'enum _LICENSE_ = "LICENSE";'`.
     1. replace `'if('` with `'if ('`.
     1. replace `'for('` with `'for ('`.
     1. replace `'foreach('` with `'foreach ('`.
@@ -122,6 +108,10 @@ this program will do,
 
 
 ## History:
+- 2016-02-28 ver. 0.034(dmd2.070.0)
+  --authors, --project and --license are removed.
+
+
 - 2016-02-22 ver. 0.33(dmd2.070.0)
   README.md and the commandline help message are generated automatically
   by ddoc.
@@ -197,14 +187,12 @@ DMDに付属のmakeを使ってください。
 
 ### オプション
 引数                |説明
---------------------|------------
+--------------------|--------------------
 -h --help -? /?     |ヘルプメッセージを出力します。
-                    |
---authors 名無し    |プロジェクトの著者を'名無し'とします。
---license NYSL      |プロジェクトのライセンスを'NYSL'とします。
---project MYPROJECT |プロジェクト名を'MYPROJECT'とします。
---setversion XXX.x  |ヴァージョン文字列を指定します。
 --version           |vwrite のヴァージョン情報を表示します。
+--setversion XXX.x  |ヴァージョン文字列を指定します。
+
+
 
 
 ## このプログラムは何をしますか:
@@ -212,10 +200,7 @@ DMDに付属のmakeを使ってください。
 
 
 1. コマンドライン引数より、プロジェクトに関する以下の情報を得ます。
-    1. `--project MYPROJECT` プロジェクトの名前を指定します。
     1. `--setversion XXX.x` ヴァージョン情報を指定します。
-    1. `--authors YOU` 著者名を指定します。
-    1. `--license LICENSE` ライセンス情報を指定します。
 
 
 
@@ -227,15 +212,9 @@ DMDに付属のmakeを使ってください。
     1. `'\r'` を `'\n'`に
     1. `'\t'` を `'    '`(スペース4個)に
     1. 行末の空白文字の消去
-    1. `'Project:'` を `'Project: MYPROJECT'`に
-    1. `'enum _PROJECT_ ="";'` を `'enum _PROJECT_="MYPROJECT"`に
     1. `'Version:'` を `'Version: XXX.x'`に
     1. `'enum _VERSION_ = "";'` を `'enum _VERSION_="XXX.x(dmdY.YYY.Y)"`に
     1. `'Date:\'` を `'Date: YYYY-MON-DD HH:MM:SS'`に
-    1. `'Authors:'` を `'Authors: YOU'`に
-    1. `'enum _AUTHORS_ = "";'` を `'enum _AUTHORS_ = "YOU";'`に
-    1. `'License:'` を `'License: LICENSE'`に
-    1. `'enum _LICENSE_ = "";'` を `'enum _LICENSE_ = "LICENSE";'`に
     1. `'if('` を `'if ('`に
     1. `'for('` を `'for ('`に
     1. `'foreach('` を `'foreach ('`に
@@ -266,6 +245,10 @@ DMDに付属のmakeを使ってください。
 
 
 ## 履歴:
+- 2016-02-28 ver. 0.34(dmd2.070.0)
+  --authors, --license, --project がなくなりました。
+
+
 - 2016-02-22 ver. 0.33(dmd2.070.0)
   README.md と コマンドラインヘルプメッセージはddocで生成するようになりました。
   'Dmd:' の見出しに対してdmdのヴァージョン情報を出力します。

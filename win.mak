@@ -2,7 +2,7 @@
 TARGET = vwrite.exe
 AUTHORS = KUMA
 LICENSE = CC0
-VERSION = 0.33
+VERSION = 0.34
 
 MAKEFILE = win.mak
 DC = dmd
@@ -39,7 +39,7 @@ clean :
 clean_obj :
 	del $(TO_LINK)
 vwrite :
-	vwrite --setversion "$(VERSION)" --project "$(TARGET)" --authors "$(AUTHORS)" --license "$(LICENSE)" $(TO_COMPILE)
+	vwrite --setversion "$(VERSION)" $(TO_COMPILE)
 ddoc :
 	$(DC) -c -o- -op -D $(COMPILE_FLAG) $(DDOC_FILE) $(TO_COMPILE) $(FLAG)
 	@type $(DOC_HEADER) $(DOC_FILES) $(DOC_FOOTER) > $(DOC_TARGET) 2>nul
@@ -47,13 +47,13 @@ ddoc :
 show :
 	@echo ROOT = src\sworks\vwrite\main.d
 	@echo TARGET = $(TARGET)
-	@echo VERSION = 0.33
+	@echo VERSION = 0.34
 run :
 	$(TARGET) $(FLAG)
 edit :
 	emacs $(TO_COMPILE)
 remake :
-	amm -J. vwrite.exe win.mak .\src\sworks\vwrite\main.d v=0.33 authors=KUMA license=CC0 $(FLAG)
+	amm -J. vwrite.exe win.mak .\src\sworks\vwrite\main.d v=0.34 authors=KUMA license=CC0 $(FLAG)
 
 debug :
 	ddbg $(TARGET)

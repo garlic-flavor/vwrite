@@ -59,6 +59,7 @@ ESCAPES = />/>/
 
 SEP = |
 COL = -
+COL20 = --------------------
 OPEN = (
 PROMPT =
     >$0

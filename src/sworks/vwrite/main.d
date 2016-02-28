@@ -1,6 +1,6 @@
 /** VWRITE - Version WRITEr -
-Version:    0.33(dmd2.070.0)
-Date:       2016-Feb-23 00:53:33
+Version:    0.34(dmd2.070.0)
+Date:       2016-Feb-28 20:02:32
 Authors:    KUMA
 License:    CC0
 
@@ -41,13 +41,9 @@ $(PROMPT vwrite [OPT...] source.d[...])
 $(DL $(DT Options)
 $(DD $(TABLE
 $(TR $(TH option)              $(SEP) $(TH description))
-$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(SEP)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)
+$(COL20)$(SEP)$(COL20)
 $(TR $(TD -h --help -? /?)     $(SEP) $(TD show help messages and exit.))
 $(TR $(TD --version)           $(SEP) $(TD show the version of vwrite.))
-$(TR                     $(SEP))
-$(TR $(TD --authors YOU)       $(SEP) $(TD set the project's author as YOU.))
-$(TR $(TD --license LICENSE)   $(SEP) $(TD  put your project to under LICENSE.))
-$(TR $(TD --project MYPROJECT) $(SEP) $(TD set your project's name as MYPROJECT))
 $(TR $(TD --setversion XXX.x)  $(SEP) $(TD set your project's version string as XXX.x.)))))
 
 What_will_this_program_do:
@@ -57,10 +53,7 @@ this program will do,
 $(OL
 $(OLI read informations about your project from command line arguments.
 $(OL
-    $(OLI `'--project MYPROJECT'` gives the name of the project.)
     $(OLI `'--setversion XXX.x'` gives the description of the version.)
-    $(OLI `'--authors YOU'` gives names of authors.)
-    $(OLI `'--license LICENSE'` gives an information about the license.)
 ))
 
 $(OLI read file names from arguments. and select files that
@@ -72,17 +65,10 @@ $(OL
     $(OLI replace `'\r'` with `'\n'`.)
     $(OLI replace `'\t'` with `'    '`(four sequential spaces).)
     $(OLI remove tailing spaces.)
-    $(OLI replace `'Project:'` with `'Project: MYPROJECT'`.)
-    $(OLI replace `'enum _PROJECT_ ="";'` with `'enum _PROJECT_="MYPROJECT"`.)
     $(OLI replace `'Version:'` with `'Version: XXX.x(dmdY.YYY.Y)'`.)
     $(OLI replace `'enum _VERSION_ = "";'` with
           `'enum _VERSION_="XXX.x(dmdY.YYY.Y)"`.)
     $(OLI replace `'Date:'` with `'Date: YYYY-MON-DD HH:MM:SS'`.)
-    $(OLI replace `'Authors:'` with `'Authors: YOU'`.)
-    $(OLI replace `'enum _AUTHORS_ = "";'` with `'enum _AUTHORS_ = "YOU";'`.)
-    $(OLI replace `'License:'` with `'License: LICENSE'`.)
-    $(OLI replace `'enum _LICENSE_ = "";'` with
-          `'enum _LICENSE_ = "LICENSE";'`.)
     $(OLI replace `'if$(OPEN)'` with `'if $(OPEN)'`.)
     $(OLI replace `'for$(OPEN)'` with `'for $(OPEN)'`.)
     $(OLI replace `'foreach$(OPEN)'` with `'foreach $(OPEN)'`.)
@@ -111,6 +97,9 @@ $(LINK2 http://creativecommons.org/publicdomain/zero/1.0/, Creative Commons Zero
 
 History:
 $(UL
+$(LI 2016-02-28 ver. 0.034(dmd2.070.0)
+  --authors, --project and --license are removed.)
+
 $(LI 2016-02-22 ver. 0.33(dmd2.070.0)
   README.md and the commandline help message are generated automatically
   by ddoc.
@@ -174,14 +163,11 @@ $(PROMPT vwrite --setversion=x.x source.d [...])
 $(DL $(DT オプション)
 $(DD $(TABLE
 $(TR $(TH 引数)                $(SEP)$(TH 説明))
-$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(SEP)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)$(COL)
+$(COL20)$(SEP)$(COL20)
 $(TR $(TD -h --help -? /?)     $(SEP)$(TD ヘルプメッセージを出力します。))
-$(TR                     $(SEP))
-$(TR $(TD --authors 名無し)    $(SEP)$(TD プロジェクトの著者を'名無し'とします。))
-$(TR $(TD --license NYSL)      $(SEP)$(TD プロジェクトのライセンスを'NYSL'とします。))
-$(TR $(TD --project MYPROJECT) $(SEP)$(TD プロジェクト名を'MYPROJECT'とします。))
-$(TR $(TD --setversion XXX.x)  $(SEP)$(TD ヴァージョン文字列を指定します。))
 $(TR $(TD --version)           $(SEP)$(TD vwrite のヴァージョン情報を表示します。)))))
+$(TR $(TD --setversion XXX.x)  $(SEP)$(TD ヴァージョン文字列を指定します。))
+
 
 このプログラムは何をしますか:
 このプログラムは、
@@ -189,10 +175,7 @@ $(TR $(TD --version)           $(SEP)$(TD vwrite のヴァージョン情報を�
 $(OL
 $(OLI コマンドライン引数より、プロジェクトに関する以下の情報を得ます。
 $(OL
-    $(OLI `--project MYPROJECT` プロジェクトの名前を指定します。)
     $(OLI `--setversion XXX.x` ヴァージョン情報を指定します。)
-    $(OLI `--authors YOU` 著者名を指定します。)
-    $(OLI `--license LICENSE` ライセンス情報を指定します。)
 ))
 
 $(OLI コマンドライン引数より拡張子が`'.d'`又は`'.di'`のファイル名のものを選びます。)
@@ -203,15 +186,9 @@ $(OL
     $(OLI `'\r'` を `'\n'`に)
     $(OLI `'\t'` を `'    '`(スペース4個)に)
     $(OLI 行末の空白文字の消去)
-    $(OLI `'Project:'` を `'Project: MYPROJECT'`に)
-    $(OLI `'enum _PROJECT_ ="";'` を `'enum _PROJECT_="MYPROJECT"`に)
     $(OLI `'Version:'` を `'Version: XXX.x'`に)
     $(OLI `'enum _VERSION_ = "";'` を `'enum _VERSION_="XXX.x(dmdY.YYY.Y)"`に)
     $(OLI `'Date:\'` を `'Date: YYYY-MON-DD HH:MM:SS'`に)
-    $(OLI `'Authors:'` を `'Authors: YOU'`に)
-    $(OLI `'enum _AUTHORS_ = "";'` を `'enum _AUTHORS_ = "YOU";'`に)
-    $(OLI `'License:'` を `'License: LICENSE'`に)
-    $(OLI `'enum _LICENSE_ = "";'` を `'enum _LICENSE_ = "LICENSE";'`に)
     $(OLI `'if$(OPEN)'` を `'if $(OPEN)'`に)
     $(OLI `'for$(OPEN)'` を `'for $(OPEN)'`に)
     $(OLI `'foreach$(OPEN)'` を `'foreach $(OPEN)'`に)
@@ -240,6 +217,9 @@ $(LINK2 http://creativecommons.org/publicdomain/zero/1.0/, Creative Commons Zero
 
 履歴:
 $(UL
+$(LI 2016-02-28 ver. 0.34(dmd2.070.0)
+  --authors, --license, --project がなくなりました。)
+
 $(LI 2016-02-22 ver. 0.33(dmd2.070.0)
   README.md と コマンドラインヘルプメッセージはddocで生成するようになりました。
   'Dmd:' の見出しに対してdmdのヴァージョン情報を出力します。)
@@ -296,11 +276,9 @@ import sworks.base.output;
 debug import std.stdio : writeln;
 
 
-enum _VERSION_ = "0.33(dmd2.070.0)";
-enum _AUTHORS_ = "KUMA";
+enum _VERSION_ = "0.34(dmd2.070.0)";
 
-enum header = "Version Writer ver " ~ _VERSION_ ~ ". written by " ~
-              _AUTHORS_ ~ ".";
+enum header = "Version Writer ver " ~ _VERSION_ ~ ". written by KUMA.";
 
 
 enum string[string] helpdoc = mixin(import("help.d"));
@@ -325,13 +303,10 @@ else
 enum RIGHT_NEWLINE = "\n";
 enum RIGHT_INDENTATION = "    ";
 
-enum PROJECT_TAG = "project";
 enum VERSION_TAG = "version";
 enum DMD_TAG = "dmd";
 enum DMD_VERSION_TAG = "DMD_VERSION";
 enum DATE_TAG = "date";
-enum AUTHORS_TAG = "authors";
-enum LICENSE_TAG = "license";
 enum DOC_FORMAT = "%-12s%s";
 
 template DocMatchRegex(string TAG)
@@ -442,12 +417,8 @@ void main(string[] args)
         import std.array : Appender;
         import std.format : formattedWrite;
         string projectName, versionName, licenseName, authorsName;
-        getopt(args,
-               config.caseInsensitive,
-               "p|project", &projectName,
-               "v|setversion", &versionName,
-               "l|license", &licenseName,
-               "a|authors", &authorsName);
+        getopt(args, config.caseInsensitive,
+               "v|setversion", &versionName);
 
         // dmd のヴァージョンの追加 X.XX -> X.XX(dmdY.YYY.Y)
         auto dmdVersion = getDmdVersion;
@@ -460,25 +431,15 @@ void main(string[] args)
         alias TAB_MATCH = ctRegex!(r"\t", "g");
         alias TRAIL_SPACES_MATCH = ctRegex!(r"[\t]+(?=\n)", "gs");
 
-        alias PROJECT_MATCH = DocMatchRegex!PROJECT_TAG;
-        alias PROJECT_MATCH2 = EnumMatchRegex!PROJECT_TAG;
         alias VERSION_MATCH = DocMatchRegex!VERSION_TAG;
         alias VERSION_MATCH2 = EnumMatchRegex!VERSION_TAG;
         alias DMD_MATCH = DocMatchRegex!DMD_TAG;
         alias DMD_MATCH2 = EnumMatchRegex!DMD_TAG;
         alias DMD_MATCH3 = DocMacroMatchRegex!DMD_VERSION_TAG;
         alias DATE_MATCH = DocMatchRegex!DATE_TAG;
-        alias AUTHORS_MATCH = DocMatchRegex!AUTHORS_TAG;
-        alias AUTHORS_MATCH2 = EnumMatchRegex!AUTHORS_TAG;
-        alias LICENSE_MATCH = DocMatchRegex!LICENSE_TAG;
-        alias LICENSE_MATCH2 = EnumMatchRegex!LICENSE_TAG;
 
         alias IF_STYLE_MATCH =
             ctRegex!(r"\b(if|for|foreach|version|catch|with)\(", "g");
-        // alias OPEN_BRACKET_STYLE_MATCH = ctRegex!(r"(\(|\[) +", "g");
-        // alias CLOSE_BRACKET_STYLE_MATCH = ctRegex!(r" +(\)|\])", "g");
-        // alias COMMA_STYLE_MATCH = ctRegex!(r"\n(\s*),\s*", "gs");
-
 
         // 処理本体
         import std.path : extension;
@@ -538,10 +499,6 @@ void main(string[] args)
                 .replaceAll(TAB_MATCH, RIGHT_INDENTATION)
                 .replaceAll(TRAIL_SPACES_MATCH, "")
 
-                .replaceAll(PROJECT_MATCH,
-                            PROJECT_TAG.docString(projectName))
-                .replaceAll(PROJECT_MATCH2,
-                            PROJECT_TAG.enumString(projectName))
                 .replaceAll(VERSION_MATCH,
                             VERSION_TAG.docString(versionName))
                 .replaceAll(VERSION_MATCH2,
@@ -553,19 +510,8 @@ void main(string[] args)
                 .replaceAll(DMD_MATCH3,
                             DMD_VERSION_TAG.docMacroString(dmdVersion))
                 .replaceAll(DATE_MATCH, DATE_TAG.docString(modifTime))
-                .replaceAll(AUTHORS_MATCH,
-                            AUTHORS_TAG.docString(authorsName))
-                .replaceAll(AUTHORS_MATCH2,
-                            AUTHORS_TAG.enumString(authorsName))
-                .replaceAll(LICENSE_MATCH,
-                            LICENSE_TAG.docString(licenseName))
-                .replaceAll(LICENSE_MATCH2,
-                            LICENSE_TAG.enumString(licenseName))
 
                 .replaceAll(IF_STYLE_MATCH, "$1 (")
-                // .replaceAll(OPEN_BRACKET_STYLE_MATCH, "$1")
-                // .replaceAll(CLOSE_BRACKET_STYLE_MATCH, "$1")
-                // .replaceAll(COMMA_STYLE_MATCH, ",\n$1 ")
 
                 .binaryReverseArgs!write(one);
 
