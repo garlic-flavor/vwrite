@@ -1,12 +1,14 @@
 /** コンソールへの出力を制御する。
- * Dmd:        2.070.0
- * Date:       2016-Feb-28 20:06:33
+ * Dmd:        2.085.0
+ * Date:       2019-Apr-01 15:26:12
  * Authors:    KUMA
  * License:    CC0
  */
 module sworks.base.output;
 
-version (Windows) public import sworks.win32.sjis;
+debug import std.stdio: writeln;
+
+version (Windows) private import sworks.win32.sjis;
 
 /// エラー出力
 void errorOutln(T ...)(lazy T msg) { Output.errorln(msg); }
@@ -18,8 +20,8 @@ void logln(T ...)(lazy T msg) { Output.logln(msg); }
 void log(T ...)(lazy T msg) { Output.log(msg); }
 
 /// 現在の冗長度に関係なく debug コンパイル時のみ出力される。
-void debOutln(T ...)(lazy T msg) { Output.debln(msg); }
-void debOut(T ...)(lazy T msg) {Output.deb(msg);}
+void debln(T ...)(lazy T msg) { Output.debln(msg); }
+void deb(T ...)(lazy T msg) {Output.deb(msg);}
 
 /// 現在の冗長度に関係なく必ず出力される。
 void output(T ...)(lazy T msg) {Output(msg);}
@@ -28,8 +30,7 @@ void outln(T...)(lazy T msg) {Output.ln(msg);}
 
 /// コンソールへの出力を制御する.
 struct Output
-{
-static:
+{ static:
     import std.stdio : stderr, stdout;
 
     /// 冗長度を示す
@@ -44,6 +45,7 @@ static:
     enum TAB_WIDTH = 4; // インデントの幅
 
 @trusted:
+
     void open(string filename, string mode = "w")
     {
         _file = File(filename, mode);
@@ -54,26 +56,41 @@ static:
 
     nothrow
     static this(){ _file = stdout; }
-    static ~this() { close; }
+    static ~this() { close(); }
 
     @property @nogc nothrow
     MODE mode() { return _mode; }
     @property @nogc nothrow
     void mode(MODE m) { debug {} else _mode = m; }
     @property @nogc nothrow
-    int indent() { return _current_indent; }
-    @property @nogc nothrow
-    void indent(int i) { _current_indent = 0 < i ? i : 0; }
-    @nogc nothrow
-    void incIndent() { _current_indent++; }
+    int indent() { return cast(int)_current_indent.length; }
+    @property nothrow
+    void indent(int i)
+    {
+        import std.array;
+        import std.range : repeat, take;
+        _current_indent = ' '.repeat.take(i * TAB_WIDTH).array;
+    }
+    nothrow
+    void incIndent()
+    {
+        import std.array;
+        import std.range : repeat, take;
+        _current_indent ~= ' '.repeat.take(TAB_WIDTH).array;
+    }
     @nogc nothrow
     void decIndent()
-    { _current_indent = 0 < _current_indent ? _current_indent-1 : 0; }
+    {
+        if (TAB_WIDTH <= _current_indent.length)
+            _current_indent = _current_indent[0..$-TAB_WIDTH];
+        else
+            _current_indent = null;
+    }
 
     /// エラー出力
     void errorln(T ...)(lazy T msg)
     {
-        if (_mode & MODE.ERROR) { _out(msg); _outln; }
+        if (_mode & MODE.ERROR) { _out(msg); _outln(); }
     }
 
     void error(T ...)(lazy T msg)
@@ -84,7 +101,7 @@ static:
     /// ログの出力。冗長度が MODE.VERBOSE の時のみ出力される。
     void logln(T ...)(lazy T msg)
     {
-        if (_mode & MODE.LOG) { _out(msg); _outln; }
+        if (_mode & MODE.LOG) { _out(msg); _outln(); }
     }
     void log(T ...)(lazy T msg)
     {
@@ -94,7 +111,7 @@ static:
     /// 現在の冗長度に関係なく debug コンパイル時のみ出力される。
     void debln(T ...)(lazy T msg)
     {
-        debug { _out(msg); _outln; }
+        debug { _out(msg); _outln(); }
     }
     void deb(T ...)(lazy T msg)
     {
@@ -110,7 +127,7 @@ static:
     void ln(T...)(lazy T msg)
     {
         _out(msg);
-        _outln;
+        _outln();
     }
 
 private:
@@ -120,16 +137,8 @@ private:
     debug MODE _mode = MODE.VERBOSE; // 現在の冗長度
     else MODE _mode = MODE.ERROR;
 
-    int _current_indent = 0;
+    string _current_indent;
     bool _is_newline = true;
-
-    void _outindent()
-    {
-        import std.range : repeat, take;
-        if (_is_newline)
-            _file.write(' '.repeat.take(_current_indent * TAB_WIDTH));
-        _is_newline = false;
-    }
 
     void _outln()
     {
@@ -140,17 +149,48 @@ private:
     void _out(T ...)(T msg)
     {
         import std.conv : to;
-        _outindent;
+        import std.array : replace;
 
+        _file.write(_current_indent);
+        auto temp = "\n" ~ _current_indent;
         if (_file !is stdout && _file !is stderr)
-            foreach (one ; msg) _file.write(one.to!string);
+        {
+            foreach (one ; msg)
+                _file.write(one.to!string.replace("\n", temp));
+        }
         else
         {
-            version (Windows) foreach (one ; msg) _file.write(one.toMBS.c);
-            else foreach (one ; msg) _file.write(one.to!string);
+            version (Windows)
+            {
+                foreach (one ; msg)
+                    _file.write(one.toMBS.c.replace("\n", temp));
+            }
+            else
+                foreach (one ; msg)
+                    _file.write(one.to!string.replace("\n", temp));
         }
     }
 
+
+    size_t getTerminalWidth()
+    {
+        version      (Windows)
+        {
+            import core.sys.windows.windows;
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            GetConsoleScreenBufferInfo (GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+            return csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        }
+        else version (linux)
+        {
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! UNDER CONSTRUCTION
+            // struct winsize w;
+            // ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+            // return w.ws_row;
+        }
+        else
+            static assert (0, "NO IMPLEMENTATION! SORRY!");
+    }
 }
 
 //##############################################################################
@@ -160,5 +200,5 @@ void main()
 {
     string func(){ writeln("func are called."); return "func"; }
     Output.incIndent;
-    outln(10, 20, "hello", "world", func, "日本語");
+    Output.ln(10, 20, "hello", "world", func, "日本語");
 }

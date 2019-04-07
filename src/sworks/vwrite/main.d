@@ -1,304 +1,27 @@
 /** VWRITE - Version WRITEr -
-Version:    0.34(dmd2.070.0)
-Date:       2016-Feb-28 20:02:32
+Version:    0.35(dmd2.085.0)
+Date:       2019-Apr-01 16:42:32
 Authors:    KUMA
 License:    CC0
-
-Macros:
-    DMD_VERSION = 2.070.0
-
-Description:
-This program appends some informations to your D source codes.
-and modify your coding style.
-Expected character coding of the source code is UTF-8(non-BOM) only.
-
-Notice:
-$(B THIS PROGRAM WILL CHANGE YOUR PROJECT'S WHITE SPACING RULE ACCORDING TO
-THE RULE OF DMD!)
-
-White_spacing_rule_of_DMD:
-$(UL
-$(LI `'\t'`(tab character) is not allowed.)
-$(LI trailing spaces are not allowed.)
-$(LI Newline sequence other than `'\n'`(unix style) is not allowed.)
-)
-
-How_to_build:
-$(DL
-$(DT On Windows)
-$(DD Please use the make tool that is distributed with dmd.)
-$(DT 32bit Windows)
-$(DD $(PROMPT make -f win.mak release))
-$(DT 64bit Windows)
-$(DD $(PROMPT make -f win.mak release FLAG=-m64))
-$(DT On linux)
-$(DD $(PROMPT make -f linux64.mak release))
-)
-
-How_to_use:
-$(PROMPT vwrite [OPT...] source.d[...])
-
-$(DL $(DT Options)
-$(DD $(TABLE
-$(TR $(TH option)              $(SEP) $(TH description))
-$(COL20)$(SEP)$(COL20)
-$(TR $(TD -h --help -? /?)     $(SEP) $(TD show help messages and exit.))
-$(TR $(TD --version)           $(SEP) $(TD show the version of vwrite.))
-$(TR $(TD --setversion XXX.x)  $(SEP) $(TD set your project's version string as XXX.x.)))))
-
-What_will_this_program_do:
-
-this program will do,
-
-$(OL
-$(OLI read informations about your project from command line arguments.
-$(OL
-    $(OLI `'--setversion XXX.x'` gives the description of the version.)
-))
-
-$(OLI read file names from arguments. and select files that
-      have `'.d'` or `'.di'` extension.)
-
-$(OLI read each files and do replacement accroding to the manners below.
-$(OL
-    $(OLI replace `'\r\n'` with `'\n'`.)
-    $(OLI replace `'\r'` with `'\n'`.)
-    $(OLI replace `'\t'` with `'    '`(four sequential spaces).)
-    $(OLI remove tailing spaces.)
-    $(OLI replace `'Version:'` with `'Version: XXX.x(dmdY.YYY.Y)'`.)
-    $(OLI replace `'enum _VERSION_ = "";'` with
-          `'enum _VERSION_="XXX.x(dmdY.YYY.Y)"`.)
-    $(OLI replace `'Date:'` with `'Date: YYYY-MON-DD HH:MM:SS'`.)
-    $(OLI replace `'if$(OPEN)'` with `'if $(OPEN)'`.)
-    $(OLI replace `'for$(OPEN)'` with `'for $(OPEN)'`.)
-    $(OLI replace `'foreach$(OPEN)'` with `'foreach $(OPEN)'`.)
-    $(OLI replace `'version$(OPEN)'` with `'version $(OPEN)'`.)
-    $(OLI replace `'catch$(OPEN)'` with `'catch $(OPEN)'`.)
-))
-
-$(OLI output to the file.)
-$(OLI rewind the modified time of the file.)
-)
-
-Acknowledgements:
-$(UL
-$(LI vwrite is written by D Programming Language.
-  $(LINK2 http://dlang.org/, Digital Mars D Programming Language)
-))
-
-Development_Environment:
-$(UL
-$(LI Windows Vista(x64) x dmd $(DMD_VERSION) x make(of Digital Mars))
-$(LI Ubuntu 15.10(amd64) x dmd $(DMD_VERSION) x gcc 5.2.1)
-)
-
-License_description:
-$(LINK2 http://creativecommons.org/publicdomain/zero/1.0/, Creative Commons Zero License)
-
-History:
-$(UL
-$(LI 2016-02-28 ver. 0.034(dmd2.070.0)
-  --authors, --project and --license are removed.)
-
-$(LI 2016-02-22 ver. 0.33(dmd2.070.0)
-  README.md and the commandline help message are generated automatically
-  by ddoc.
-  add 'Dmd:', ddoc section.)
-
-$(LI 2016-01-29 ver. 0.32(dmd2.070.0)
-  The version information of dmd is added to the user specified string
-  automatically.)
-
-$(LI 2015-12-16 ver. 0.31(dmd2.069.2)
-  add replacing rule for `'if $(OPEN)'`, `'for $(OPEN)'`,
-  `'foreach $(OPEN)'`,
-  `'version $(OPEN)'`, `'catch $(OPEN)'`.)
-
-$(LI 2015 12/14 ver. 0.30(dmd2.069.2)
-  add japanese messages.)
-
-$(LI 2015 12/13 ver. 0.29(dmd2.069.2)
-  fully brush up.
-$(UL
-    $(LI delete v-style.xml.)
-    $(LI use command line argument for all settings.)
-    $(LI delete -target.)
-    $(LI add checking process of white spacing style.)
-    $(LI add English README.md.)
-)))
-
-$(HL)
-
-はじめにお読み下さい:
-これは D言語で書かれたソースコードにヴァージョン情報を付加するプログラムです。
-ソースコードに使える文字コードは UTF-8(non-BOM) のみです。
-
-
-注意:
-$(B このプログラムは対象ソースコードの改行コードとインデント文字を変更します!)
-
-DMDルール:
-$(UL
-$(LI `'\t'`(タブ文字)を使わない。)
-$(LI 行末の空白文字はだめ。)
-$(LI 改行コードは`'\n'`のみ。)
-)
-
-ビルド方法:
-$(DL
-$(DT Windowsでは)
-$(DD DMDに付属のmakeを使ってください。)
-$(DT 32bit版では)
-$(DD $(PROMPT make -f win.mak release FLAG=-version=InJapanese))
-$(DT 64bit版では)
-$(DD $(PROMPT make -f win.mak release FLAG="-version=InJapanese -m64"))
-$(DT linuxでは)
-$(DD $(PROMPT make -f linux64.mak release FLAG=-version=InJapanese))
-)
-
-使い方:
-コマンドラインから使います。
-$(PROMPT vwrite --setversion=x.x source.d [...])
-
-$(DL $(DT オプション)
-$(DD $(TABLE
-$(TR $(TH 引数)                $(SEP)$(TH 説明))
-$(COL20)$(SEP)$(COL20)
-$(TR $(TD -h --help -? /?)     $(SEP)$(TD ヘルプメッセージを出力します。))
-$(TR $(TD --version)           $(SEP)$(TD vwrite のヴァージョン情報を表示します。)))))
-$(TR $(TD --setversion XXX.x)  $(SEP)$(TD ヴァージョン文字列を指定します。))
-
-
-このプログラムは何をしますか:
-このプログラムは、
-
-$(OL
-$(OLI コマンドライン引数より、プロジェクトに関する以下の情報を得ます。
-$(OL
-    $(OLI `--setversion XXX.x` ヴァージョン情報を指定します。)
-))
-
-$(OLI コマンドライン引数より拡張子が`'.d'`又は`'.di'`のファイル名のものを選びます。)
-
-$(OLI それぞれのファイルに対して以下の置換を行います。
-$(OL
-    $(OLI `'\r\n'` を `'\n'` に)
-    $(OLI `'\r'` を `'\n'`に)
-    $(OLI `'\t'` を `'    '`(スペース4個)に)
-    $(OLI 行末の空白文字の消去)
-    $(OLI `'Version:'` を `'Version: XXX.x'`に)
-    $(OLI `'enum _VERSION_ = "";'` を `'enum _VERSION_="XXX.x(dmdY.YYY.Y)"`に)
-    $(OLI `'Date:\'` を `'Date: YYYY-MON-DD HH:MM:SS'`に)
-    $(OLI `'if$(OPEN)'` を `'if $(OPEN)'`に)
-    $(OLI `'for$(OPEN)'` を `'for $(OPEN)'`に)
-    $(OLI `'foreach$(OPEN)'` を `'foreach $(OPEN)'`に)
-    $(OLI `'version$(OPEN)'` を `'version $(OPEN)'`に)
-    $(OLI `'catch$(OPEN)'` を `'catch $(OPEN)'`に)
-))
-
-$(OLI 同じファイルに出力します。)
-$(OLI ファイルの最終編集時刻を書き戻します。)
-)
-
-謝辞:
-$(UL
-$(LI vwrite は D言語で書かれています。
-  $(LINK2 http://dlang.org/, Digital Mars D Programming Language)
-))
-
-開発環境:
-$(UL
-$(LI Windows Vista(x64) x dmd$(DMD_VERSION) x (Digital Marsの)make)
-$(LI Ubuntu 15.10(amd64) x dmd$(DMD_VERSION) x gcc 5.2.1)
-)
-
-ライセンス:
-$(LINK2 http://creativecommons.org/publicdomain/zero/1.0/, Creative Commons Zero License)
-
-履歴:
-$(UL
-$(LI 2016-02-28 ver. 0.34(dmd2.070.0)
-  --authors, --license, --project がなくなりました。)
-
-$(LI 2016-02-22 ver. 0.33(dmd2.070.0)
-  README.md と コマンドラインヘルプメッセージはddocで生成するようになりました。
-  'Dmd:' の見出しに対してdmdのヴァージョン情報を出力します。)
-
-$(LI 2016-01-29 ver. 0.32(dmd2.070.0)
-  dmdのヴァージョン情報は自動的に付加されるようになりました。)
-
-$(LI 2015-12-16 ver. 0.31(dmd2.069.2)
-  `'if $(OPEN)'`, `'for $(OPEN)'`, `'foreach $(OPEN)'`, `'version $(OPEN)'`,
-  `'catch $(OPEN)'` に関する変換を追加。)
-
-$(LI 2015 12/14 ver. 0.30(dmd2.069.2)
-  日本語メッセージの追加。)
-
-$(LI 2015 12/13 ver. 0.29(dmd2.069.2)
-  全面刷新。
-$(UL
-    $(LI v-style.xml の廃止)
-    $(LI 情報はコマンドライン引数で指定するように。)
-    $(LI -target の廃止)
-    $(LI 空白文字に関する慣習をDMD準拠に。)
-    $(LI 英語版 README.md の追加。)
-))
-
-$(LI 2013 03/02 ver. 0.28(dmd2.062)
-  linuxで v-style.xml を探せないバグの修正。)
-
-$(LI 2012 10/28 ver. 0.27(dmd2.060)
-  -target で指定したファイルより新しいもののみ更新するように変更しました。)
-
-$(LI 2012 10/27 ver. 0.26(dmd2.060)
-  GitHub デビュー)
-
-$(LI 2012  2/21  ver. 0.24 for dmd2.058
-  some bugs are fixed.)
-
-$(LI 2010  3/14  ver. 0.22
-  for dmd2.041. but no change occur.)
-
-$(LI 2009 10/20  ver. 0.21
-  for dmd2.035.)
-
-$(LI 2009  9/ 1  ver. 0.1
-  First released version.)
-)
-
 **/
 module sworks.vwrite.main;
 
-version (D_Ddoc){}
-else:
-
 import sworks.base.output;
+import sworks.base.mo;
+import sworks.base.getopt;
 debug import std.stdio : writeln;
 
-
-enum _VERSION_ = "0.34(dmd2.070.0)";
+enum _VERSION_ = "0.35(dmd2.085.0)";
 
 enum header = "Version Writer ver " ~ _VERSION_ ~ ". written by KUMA.";
 
-
-enum string[string] helpdoc = mixin(import("help.d"));
-
-version (InJapanese)
+string description()
 {
-    enum help = header ~
-        "\nD言語のソースコードにヴァージョン情報を付加します。\n"
-        "空白文字に関する慣習をDMD準拠のものにします。\n" ~
-        helpdoc["使い方:"] ~
-        helpdoc["DMDルール:"];
+    return _("This program appends some informations to your D source files. And modify your coding style. Expected character coding of the source code is UTF-8(non-BOM) only.");
 }
-else
-{
-    enum help = header ~
-        "\nSet version strings to your project.\n"
-        "And verify white space styles as of DMD style.\n" ~
-        helpdoc["How to use:"] ~
-        helpdoc["White spacing rule of DMD:"];
-}
+
+enum how_to_use =
+    ">vwrite -v VERSION.OF.YOUR.PROJECT code.d code2.d ...";
 
 enum RIGHT_NEWLINE = "\n";
 enum RIGHT_INDENTATION = "    ";
@@ -333,6 +56,134 @@ template EnumMatchRegex(string NAME)
     enum EnumMatchRegex = ctRegex!(r"(?<=^\s*)enum\s+_" ~ NAME.toUpper ~
                                    r"_\b.*$", "gm");
 }
+
+//
+void main(string[] args)
+{
+    // import std.getopt : getopt, config, optionChar;
+    import std.array : Appender, join;
+    import std.process: environment;
+    alias L = MoUtil.ExpandMode.Lazily;
+
+    try
+    {
+        _.projectName = "vwrite";
+        _.setlocale(environment.get("LANG", "en"));
+
+        string versionString;
+        Appender!(string[]) files;
+        auto result = Getopt(
+            args,
+
+            "lang", "-lang **", _("Specify the language.", L),
+            (string key, string lang){ _.setlocale(lang); },
+
+            "verbose", _("Set output policy as 'VERBOSE'.", L),
+            (){ Output.mode = Output.MODE.VERBOSE; },
+
+            "quiet|q", _("Set output policy as 'quiet'.", L),
+            (){ Output.mode = Output.MODE.QUIET; },
+
+            "setversion|version|v", _("Set a version string of your project.", L),
+            &versionString,
+
+            Getopt.Config.filePattern,
+            "*.di?", "*.d", _("D source files.", L),
+            &files.put!string,
+            );
+
+        // 引数が足りない場合はヘルプを表示する。
+        if (0 == versionString.length || 0 == files.data.length)
+            result.helpWanted = true;
+
+        // ヘルプが要求されている場合はここで終り。
+        if (result.helpWanted)
+            return showHelp(result.helpAbout, result.options);
+
+        // dmd のヴァージョンの追加 X.XX -> X.XX(dmdY.YYY.Y)
+        auto dmdVersion = getDmdVersion;
+        versionString = [versionString, "(dmd", dmdVersion, ")"].join;
+
+        // 正規表現の準備
+        import std.regex : ctRegex, replaceAll;
+        alias CRLF_MATCH = ctRegex!(r"\r\n", "gs");
+        alias CR_MATCH = ctRegex!(r"\r", "gs");
+        alias TAB_MATCH = ctRegex!(r"\t", "g");
+        alias TRAIL_SPACES_MATCH = ctRegex!(r"[\t]+(?=\n)", "gs");
+
+        alias VERSION_MATCH = DocMatchRegex!VERSION_TAG;
+        alias VERSION_MATCH2 = EnumMatchRegex!VERSION_TAG;
+        alias DMD_MATCH = DocMatchRegex!DMD_TAG;
+        alias DMD_MATCH2 = EnumMatchRegex!DMD_TAG;
+        alias DMD_MATCH3 = DocMacroMatchRegex!DMD_VERSION_TAG;
+        alias DATE_MATCH = DocMatchRegex!DATE_TAG;
+        alias DATE_MATCH2 = EnumMatchRegex!DATE_TAG;
+
+        alias IF_STYLE_MATCH =
+            ctRegex!(r"\b(if|for|foreach|version|catch|with)\(", "g");
+
+        // 処理本体
+        import std.path : extension;
+        import std.datetime : SysTime, Clock, DateTime;
+        import std.file : exists, getTimes, setTimes, read, write;
+        import std.conv : to;
+        import std.functional : reverseArgs;
+
+        foreach (one; files.data)
+        {
+            if (!one.exists) // 存在しないのははぶく。
+            {
+                _("%s is not found.", one).outln;
+                continue;
+            }
+
+            _("start a process about %s.", one).logln;
+            Output.incIndent;
+
+            SysTime aTime, mTime;
+            one.getTimes(aTime, mTime);
+            auto modifTime =
+                DateTime(mTime.year, mTime.month, mTime.day,
+                         mTime.hour, mTime.minute, mTime.second).toString;
+
+            _("last access time: %s", aTime).logln;
+            _("last modified time: %s", mTime).logln;
+
+            // 変換本体
+            one.read.to!string
+                .replaceAll(CRLF_MATCH, RIGHT_NEWLINE)
+                .replaceAll(CR_MATCH, RIGHT_NEWLINE)
+                .replaceAll(TAB_MATCH, RIGHT_INDENTATION)
+                .replaceAll(TRAIL_SPACES_MATCH, "")
+
+                .replaceAll(VERSION_MATCH,
+                            VERSION_TAG.docString(versionString))
+                .replaceAll(VERSION_MATCH2,
+                            VERSION_TAG.enumString(versionString))
+                .replaceAll(DMD_MATCH,
+                            DMD_TAG.docString(dmdVersion))
+                .replaceAll(DMD_MATCH2,
+                            DMD_TAG.enumString(dmdVersion))
+                .replaceAll(DMD_MATCH3,
+                            DMD_VERSION_TAG.docMacroString(dmdVersion))
+                .replaceAll(DATE_MATCH, DATE_TAG.docString(modifTime))
+                .replaceAll(DATE_MATCH2, DATE_TAG.enumString(modifTime))
+
+                .replaceAll(IF_STYLE_MATCH, "$1 (")
+
+                .reverseArgs!write(one);
+
+            // 編集時間を戻す。
+            one.setTimes(Clock.currTime, mTime);
+
+            Output.decIndent;
+            _("done.").logln;
+        }
+    }
+    catch (Throwable t) t.toString.errorOut;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 auto docString(string tag, string name)
 {
@@ -375,155 +226,27 @@ auto getDmdVersion()
 }
 
 
-//
-void main(string[] args)
+void showHelp(string about, Getopt.Option[] opts)
 {
-
-    try
+    switch (about)
     {
-        import std.getopt : getopt, config, optionChar;
-        import std.array : join;
-
-        // ヘルプが必要かどうか。
-        if (args.length <= 1) return help.outln;
-
-        bool needs_help = false;
-        optionChar = '/';
-        getopt(args,
-               config.caseInsensitive,
-               config.passThrough,
-               "help|h|?", &needs_help);
-        if (needs_help) return help.outln;
-
-        bool show_version = false;
-        optionChar = '-';
-        getopt(args,
-               config.caseInsensitive,
-               config.passThrough,
-               "help|h|?", &needs_help,
-               "version", &show_version);
-        if      (needs_help) return help.outln;
-        else if (show_version) return header.outln;
-
-        // 冗長性の決定
-        bool is_verbose = false;
-        getopt(args,
-               config.caseInsensitive,
-               config.passThrough,
-               "verbose", &is_verbose);
-        if (is_verbose) Output.mode = Output.MODE.VERBOSE;
-
-        // プロジェクト名、ヴァージョン名、著者、ライセンスの取得
-        import std.array : Appender;
-        import std.format : formattedWrite;
-        string projectName, versionName, licenseName, authorsName;
-        getopt(args, config.caseInsensitive,
-               "v|setversion", &versionName);
-
-        // dmd のヴァージョンの追加 X.XX -> X.XX(dmdY.YYY.Y)
-        auto dmdVersion = getDmdVersion;
-        versionName = [versionName, "(dmd", dmdVersion, ")"].join;
-
-        // 正規表現の準備
-        import std.regex : ctRegex, replaceAll;
-        alias CRLF_MATCH = ctRegex!(r"\r\n", "gs");
-        alias CR_MATCH = ctRegex!(r"\r", "gs");
-        alias TAB_MATCH = ctRegex!(r"\t", "g");
-        alias TRAIL_SPACES_MATCH = ctRegex!(r"[\t]+(?=\n)", "gs");
-
-        alias VERSION_MATCH = DocMatchRegex!VERSION_TAG;
-        alias VERSION_MATCH2 = EnumMatchRegex!VERSION_TAG;
-        alias DMD_MATCH = DocMatchRegex!DMD_TAG;
-        alias DMD_MATCH2 = EnumMatchRegex!DMD_TAG;
-        alias DMD_MATCH3 = DocMacroMatchRegex!DMD_VERSION_TAG;
-        alias DATE_MATCH = DocMatchRegex!DATE_TAG;
-
-        alias IF_STYLE_MATCH =
-            ctRegex!(r"\b(if|for|foreach|version|catch|with)\(", "g");
-
-        // 処理本体
-        import std.path : extension;
-        import std.datetime : SysTime, Clock, DateTime;
-        import std.file : exists, getTimes, setTimes, read, write;
-        import std.conv : to;
-        import std.functional : binaryReverseArgs;
-
-        if (0 < args.length) args = args[1..$];
-        foreach (one; args) // 全ての引数に対して。
-        {
-            auto ext = one.extension; // 拡張子でD言語のだけ選ぶ。
-            if (ext != ".d" && ext != ".di")
-            {
-                version (InJapanese)
-                    logln(one, " はD言語のソースコードではありません。");
-                else
-                    logln(one, " is not a D source.");
-                continue;
-            }
-
-            if (!one.exists) // 存在しないのははぶく。
-            {
-                version (InJapanese)
-                    logln(one, " は存在しません。");
-                else
-                    outln(one, " is not found.");
-                continue;
-            }
-
-            version (InJapanese)
-                logln(one, " の処理を開始します。");
-            else
-                logln("start the process about ", one);
-            Output.incIndent;
-
-            SysTime aTime, mTime;
-            one.getTimes(aTime, mTime);
-            auto modifTime =
-                DateTime(mTime.year, mTime.month, mTime.day,
-                         mTime.hour, mTime.minute, mTime.second).toString;
-            version (InJapanese)
-            {
-                logln("最終読み取り時刻 : ", aTime);
-                logln("最終編集時刻     : ", mTime);
-            }
-            else
-            {
-                logln("last access time   : ", aTime);
-                logln("last modified time : ", mTime);
-            }
-
-            // 変換本体
-            one.read.to!string
-                .replaceAll(CRLF_MATCH, RIGHT_NEWLINE)
-                .replaceAll(CR_MATCH, RIGHT_NEWLINE)
-                .replaceAll(TAB_MATCH, RIGHT_INDENTATION)
-                .replaceAll(TRAIL_SPACES_MATCH, "")
-
-                .replaceAll(VERSION_MATCH,
-                            VERSION_TAG.docString(versionName))
-                .replaceAll(VERSION_MATCH2,
-                            VERSION_TAG.enumString(versionName))
-                .replaceAll(DMD_MATCH,
-                            DMD_TAG.docString(dmdVersion))
-                .replaceAll(DMD_MATCH2,
-                            DMD_TAG.enumString(dmdVersion))
-                .replaceAll(DMD_MATCH3,
-                            DMD_VERSION_TAG.docMacroString(dmdVersion))
-                .replaceAll(DATE_MATCH, DATE_TAG.docString(modifTime))
-
-                .replaceAll(IF_STYLE_MATCH, "$1 (")
-
-                .binaryReverseArgs!write(one);
-
-            // 編集時間を戻す。
-            one.setTimes(Clock.currTime, mTime);
-
-            version (InJapanese)
-                logln("終了。");
-            else
-                logln("done.");
-            Output.decIndent;
-        }
+    case "description":
+        description.outln;
+        break;
+    case "how_to_use":
+        how_to_use.outln;
+        break;
+    case "options":
+        Getopt.prettyDescriptor(opts).outln;
+        break;
+    default:
+        header.outln;
+        description.outln;
+        outln;
+        how_to_use.outln;
+        outln;
+        Getopt.prettyDescriptor(opts, 80).outln;
+        break;
     }
-    catch (Throwable t) t.toString.errorOut;
 }
+

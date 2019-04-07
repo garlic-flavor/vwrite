@@ -1,0 +1,3 @@
+[submodule ".\\submodule\\mofile"]
+	path = .\\submodule\\mofile
+	url = https://github.com/FreeSlave/mofile.git
