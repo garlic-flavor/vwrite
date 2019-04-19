@@ -60,12 +60,6 @@ $(DDOC_SECTION_H 想定されているフォルダ構成)
  */
 struct MoUtil
 {
-    private enum
-    {
-        _defaultPath = "l10n",
-        _moFileExtension = "mo",
-    }
-
     /// moファイルが入っているルートディレクトリを指定する。初期値は "l10n"。
     @property @safe @nogc pure nothrow
     void basePath(string p)
@@ -112,39 +106,29 @@ struct MoUtil
         file = MoFile.init;
     }
 
-    ///
-    enum ExpandMode
-    {
-        Lazily,
-    }
-
     /// gettext を呼び出す。
     auto opCall(OPT...)(string s, OPT opt) const
     {
-        static if (0 < OPT.length && is(OPT[$-1] == ExpandMode))
-        {
-            return (){
-                static if (1 < OPT.length)
-                {
-                    import std.format: format;
-                    s = s.format(opt);
-                }
-                return file.gettext(s);
-            };
-        }
-        else
-        {
-            static if (0 < OPT.length)
-            {
-                import std.format: format;
-                s = s.format(opt);
-            }
+        import std.format: format;
+        return file.gettext(s).format(opt);
+    }
 
-            return file.gettext(s);
-        }
+    /// gettext を呼び出す。(Lazy evaluation.)
+    auto _(OPT...)(string s, OPT opt) const
+    {
+        return ()=>opCall(s, opt);
     }
 
 private:
+
+    version (Windows)
+        enum _defaultPath = "l10n";
+    else
+        enum _defaultPath = "/usr/local/etc";
+
+    enum _moFileExtension = "mo";
+
+
     @safe
     bool check(string loc, out string path)
     {
@@ -155,10 +139,19 @@ private:
         import std.algorithm: findAmong;
 
         if (0 == _basePath.length)
-            _basePath = thisExePath.dirName.buildPath(_defaultPath);
+        {
+            version (Windows)
+                _basePath = thisExePath.dirName.buildPath(_defaultPath);
+            else
+                _basePath = _defaultPath;
+        }
 
-        path = _basePath.buildPath(_projectName, loc)
-            .setExtension(_moFileExtension);
+        version (Windows)
+            path = _basePath.buildPath(_projectName, loc)
+                .setExtension(_moFileExtension);
+        else
+            path = _basePath.buildPath(_projectName, "l10n", loc)
+                .setExtension(_moFileExtension);
 
         if      (path.exists && path.isFile)
             return true;

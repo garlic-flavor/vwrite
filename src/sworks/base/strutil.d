@@ -1,6 +1,6 @@
 /**
- * Dmd:        2.085.0
- * Date:       2019-Apr-01 01:03:25
+ * Dmd:        2.085.1
+ * Date:       2019-Apr-10 23:12:13
  * Authors:    KUMA
  * License:    CC0
  */
@@ -237,7 +237,16 @@ struct Tabular(size_t COL) if (1 < COL)
         import std.conv: to;
         import std.uni: isAlpha;
 
-        auto leftW = header[0 .. $-1].fold!((a, b)=>a + b.width + 3)(0u);
+        version (linux)
+        {
+            // is this a bug?
+            size_t leftW;
+            header[0..$-1].each!(a=>leftW += a.width + 3);
+        }
+        else
+        {
+            auto leftW = header[0 .. $-1].fold!((a, b)=>a + b.width + 3)(0u);
+        }
         auto rightW = (cast(int)leftW) + 10 < width ? width - leftW : 10;
 
         Appender!(string[]) app;

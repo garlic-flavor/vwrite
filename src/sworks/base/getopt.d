@@ -139,7 +139,7 @@ static:
             ob(Config.optionalValue);
             ob(Config.notInSummary);
             ob("help|h|\\?");
-            ob(_("Show help messages.", MoUtil.ExpandMode.Lazily));
+            ob(_._("Show help messages."));
             options.put(
                 ob((string key, string value)
                    { r.helpWanted = true; r.helpAbout = value; }));

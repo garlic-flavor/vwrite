@@ -1,0 +1,120 @@
+# Japanese translations for VWRITE package.
+# Copyright (C) 2019 VWRITE written by KUMA some rights reserved.
+# This file is distributed under the same license as the VWRITE package.
+# Automatically generated, 2019.
+#
+#: submodule\mofile\source\mofile.d:583 submodule\mofile\source\mofile.d:685
+msgid ""
+msgstr ""
+"Project-Id-Version: VWRITE 0.35\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-01 23:14+0900\n"
+"PO-Revision-Date: 2019-04-03 23:28+0900\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: src\sworks\vwrite\main.d:20
+msgid ""
+"This program appends some informations to your D source files. And modify "
+"your coding style. Expected character coding of the source code is UTF-8(non-"
+"BOM) only."
+msgstr "このプログラムはD言語で書かれたソースコードにヴァージョン情報などを追加します。ついでにコーディングスタイルもD準拠に変更します。ソースコードに使える文字コードは、UTF-8(BOM無し)のみです。"
+
+#: src\sworks\vwrite\main.d:78
+msgid "Specify the language."
+msgstr "出力用の言語を設定します。"
+
+#: src\sworks\vwrite\main.d:81
+msgid "Set output policy as 'VERBOSE'."
+msgstr "出力設定を'冗長'に設定します。"
+
+#: src\sworks\vwrite\main.d:84
+msgid "Set output policy as 'quiet'."
+msgstr "出力設定を'静か'に設定します。"
+
+#: src\sworks\vwrite\main.d:87
+msgid "Set a version string of your project."
+msgstr "プロジェクトのヴァージョン文字列を設定します。"
+
+#: src\sworks\vwrite\main.d:91
+msgid "D source files."
+msgstr "D言語のソースファイル。"
+
+#: src\sworks\vwrite\main.d:136
+#, c-format
+msgid "%s is not found."
+msgstr "%s は見つかりませんでした。"
+
+#: src\sworks\vwrite\main.d:140
+#, c-format
+msgid "start a process about %s."
+msgstr "%s の処理を開始します。"
+
+#: src\sworks\vwrite\main.d:149
+#, c-format
+msgid "last access time: %s"
+msgstr "最終アクセス日時: %s"
+
+#: src\sworks\vwrite\main.d:150
+#, c-format
+msgid "last modified time: %s"
+msgstr "最終更新日時: %s"
+
+#: src\sworks\vwrite\main.d:180
+msgid "done."
+msgstr "終了。"
+
+#: src\sworks\base\getopt.d:142
+msgid "Show help messages."
+msgstr "ヘルプメッセージを出力します。"
+
+#: src\sworks\base\getopt.d:156
+#, c-format
+msgid "One more target is expected for option '%s'"
+msgstr "オプション'%s'の為の処理コードが足りません。"
+
+#: src\sworks\base\getopt.d:188 src\sworks\base\getopt.d:222
+#, c-format
+msgid "An unknown option: %s"
+msgstr "%s は未知のオプションです。"
+
+#: src\sworks\base\getopt.d:197 src\sworks\base\getopt.d:216
+#, c-format
+msgid "Option '%s' is required."
+msgstr "オプション '%s' は必須です。"
+
+#: src\sworks\base\getopt.d:239
+msgid "option"
+msgstr "オプション"
+
+#: src\sworks\base\getopt.d:239
+msgid "description"
+msgstr "説明"
+
+#: src\sworks\base\getopt.d:391
+#, c-format
+msgid "option %s needs an argument."
+msgstr "オプション %s には追加の引数が必要です。"
+
+#: src\sworks\base\getopt.d:546
+msgid "a selector string is needed."
+msgstr "フィルタ文字列が必要です。"
+
+#: submodule\mofile\source\mofile.d:686
+msgid "Hello"
+msgstr ""
+
+#: submodule\mofile\source\mofile.d:687 submodule\mofile\source\mofile.d:688
+#: submodule\mofile\source\mofile.d:689
+msgid "File"
+msgid_plural "Files"
+msgstr[0] ""
+
+#: submodule\mofile\source\mofile.d:703
+msgid "abcd"
+msgstr ""

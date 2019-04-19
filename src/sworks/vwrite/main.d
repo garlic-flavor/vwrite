@@ -63,7 +63,6 @@ void main(string[] args)
     // import std.getopt : getopt, config, optionChar;
     import std.array : Appender, join;
     import std.process: environment;
-    alias L = MoUtil.ExpandMode.Lazily;
 
     try
     {
@@ -75,20 +74,20 @@ void main(string[] args)
         auto result = Getopt(
             args,
 
-            "lang", "-lang **", _("Specify the language.", L),
+            "lang", "-lang **", _._("Specify the language."),
             (string key, string lang){ _.setlocale(lang); },
 
-            "verbose", _("Set output policy as 'VERBOSE'.", L),
+            "verbose", _._("Set output policy as 'VERBOSE'."),
             (){ Output.mode = Output.MODE.VERBOSE; },
 
-            "quiet|q", _("Set output policy as 'quiet'.", L),
+            "quiet|q", _._("Set output policy as 'quiet'."),
             (){ Output.mode = Output.MODE.QUIET; },
 
-            "setversion|version|v", _("Set a version string of your project.", L),
+            "setversion|version|v", _._("Set a version string of your project."),
             &versionString,
 
             Getopt.Config.filePattern,
-            "*.di?", "*.d", _("D source files.", L),
+            "*.di?", "*.d", _._("D source files."),
             &files.put!string,
             );
 
